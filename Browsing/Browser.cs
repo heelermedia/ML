@@ -115,7 +115,6 @@ namespace Browsing
             string path = copyNodes.ToNode.Path;
             await Task.Run(async () =>
             {
-                DirectoryInfo toDirectory = new DirectoryInfo(path);
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
@@ -136,6 +135,40 @@ namespace Browsing
                 }
             });
             return await GetBrowserNodesAsync(path);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="createDirectory"></param>
+        /// <returns></returns>
+        public async Task<Node> CreateDirectory(CreateDirectory createDirectory)
+        {
+            string path = $"{createDirectory.Path}/{createDirectory.Name}";
+            await Task.Run(() =>
+            {
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+              
+            });
+            return await GetBrowserNodesAsync(path);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Node> CreateFile(CreateFile createFile)
+        {
+            string path = $"{createFile.Path}/{createFile.Name}";
+            await Task.Run(() =>
+            {
+                if (!File.Exists(path))
+                {
+                    File.Create(path);
+                }
+            });
+            return await GetBrowserNodesAsync(createFile.Path);
         }
         /// <summary>
         /// 

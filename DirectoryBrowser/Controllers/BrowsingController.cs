@@ -49,18 +49,22 @@ namespace DirectoryBrowser.Controllers
             return Ok(node);
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+
+        [Route("CreateDirectory")]
+        [HttpPut]
+        public async Task<ActionResult<Node>> CreateDirectory([FromBody] CreateDirectory createDirectory)
         {
-            return "value";
+            Node node = await _browser.CreateDirectory(createDirectory);
+            return Ok(node);
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [Route("CreateFile")]
+        [HttpPut]
+        public async Task<ActionResult<Node>> CreateDirectory([FromBody] CreateFile createFile)
         {
+            Node node = await _browser.CreateFile(createFile);
+            return Ok(node);
         }
-
 
         [HttpDelete]
         public async Task<ActionResult> Delete(RemoveNodes removeNodes)

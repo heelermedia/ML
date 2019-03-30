@@ -40,5 +40,17 @@ namespace Browsing
         /// <param name="copyNodes"></param>
         /// <returns></returns>
         Task<Node> CopyNodesAsync(CopyNodes copyNodes);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="createDirectory"></param>
+        /// <returns></returns>
+        Task<Node> CreateDirectory(CreateDirectory createDirectory);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="createFile"></param>
+        /// <returns></returns>
+        Task<Node> CreateFile(CreateFile createFile);
     }
 }
