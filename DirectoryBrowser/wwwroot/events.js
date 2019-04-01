@@ -29,27 +29,13 @@
     }
 
     Events.prototype.subscribe = function (eventName, callBack, context) {
-        if (!eventName) {
-            console.log("Events: Attempting to subscribe with an empty event name. callBack: " + callBack);
-            return function () { };
-        }
-
-        if (!callBack) {
-            console.log("Events: Attempting to subscribe with an empty callback. event name: " + eventName);
-            return function () { };
-        }
-
-        if (!context) {
-
-        }
-
+      
         this.register(eventName, context);
         var eventObj = this.events[eventName];
         eventObj.subscribers.push(callBack);
        
     }
 
-    //TODO: um yea this needs work
     Events.prototype.unsubscribe = function (eventName, callBack) {
         if (this.exists(eventName)) {
             var eventObj = this.events[eventName];
@@ -60,7 +46,6 @@
             });
         }
     }
-
 
     return Events;
 
