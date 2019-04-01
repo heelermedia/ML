@@ -23,7 +23,7 @@ namespace Browsing
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public async Task<Node> GetBrowserNodesAsync(string path)
+        public Node GetBrowserNodes(string path)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace Browsing
                 rootNode.FileCount = files.Count();
                 rootNode.Children.AddRange(files);
 
-                return await Task.FromResult(rootNode);
+                return rootNode;
             }
             catch (Exception e)
             {
@@ -66,59 +66,53 @@ namespace Browsing
                 }
             }
 
-            return await GetBrowserNodesAsync(path);
+            return GetBrowserNodes(path);
         }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="removeNodes"></param>
         /// <returns></returns>
-        public async Task DeleteNodesAsync(RemoveNodes removeNodes)
+        public void DeleteNodes(RemoveNodes removeNodes)
         {
-            await Task.Run(() =>
+            foreach (Node node in removeNodes.NodesToRemove)
             {
-                foreach (Node node in removeNodes.NodesToRemove)
+                DirectoryInfo directoryInfo = new DirectoryInfo(node.Path);
+                if (directoryInfo.Exists)
                 {
-                    DirectoryInfo directoryInfo = new DirectoryInfo(node.Path);
-                    if (directoryInfo.Exists)
-                    {
-                        directoryInfo.Delete(true);
-                    }
+                    directoryInfo.Delete(true);
                 }
-            });
+            }
         }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="moveNodes"></param>
         /// <returns></returns>
-        public async Task<Node> MoveNodesAsync(MoveNodes moveNodes)
+        public Node MoveNodes(MoveNodes moveNodes)
         {
             string path = moveNodes.ToNode.Path;
-            await Task.Run(() =>
+            foreach (Node node in moveNodes.NodesToMove)
             {
-                foreach (Node node in moveNodes.NodesToMove)
+                string target = $"{path}/{node.Name}";
+                if (node.IsFile)
                 {
-                    string target = $"{path}/{node.Name}";
-                    if (node.IsFile)
+                    FileInfo fileInfo = new FileInfo(node.Path);
+                    if (fileInfo.Exists)
                     {
-                        FileInfo fileInfo = new FileInfo(node.Path);
-                        if (fileInfo.Exists)
-                        {
-                            File.Move(node.Path, target);
-                        }
-                    }
-                    else
-                    {
-                        DirectoryInfo directoryInfo = new DirectoryInfo(node.Path);
-                        if (directoryInfo.Exists)
-                        {
-                            Directory.Move(node.Path, target);
-                        }
+                        File.Move(node.Path, target);
                     }
                 }
-            });
-            return await GetBrowserNodesAsync(path);
+                else
+                {
+                    DirectoryInfo directoryInfo = new DirectoryInfo(node.Path);
+                    if (directoryInfo.Exists)
+                    {
+                        Directory.Move(node.Path, target);
+                    }
+                }
+            }
+            return GetBrowserNodes(path);
         }
         /// <summary>
         /// 
@@ -128,62 +122,52 @@ namespace Browsing
         public async Task<Node> CopyNodesAsync(CopyNodes copyNodes)
         {
             string path = copyNodes.ToNode.Path;
-            await Task.Run(async () =>
+            if (!Directory.Exists(path))
             {
-                if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            }
+            foreach (Node node in copyNodes.NodesToCopy)
+            {
+                string target = $"{path}/{node.Name}";
+                if (node.IsFile)
                 {
-                    Directory.CreateDirectory(path);
-                }
-                foreach (Node node in copyNodes.NodesToCopy)
-                {
-                    string target = $"{path}/{node.Name}";
-                    if (node.IsFile)
+                    using (FileStream source = File.Open(node.Path, FileMode.Open))
                     {
-                        using (FileStream source = File.Open(node.Path, FileMode.Open))
+                        using (FileStream destination = File.Create(target))
                         {
-                            using (FileStream destination = File.Create(target))
-                            {
-                                await source.CopyToAsync(destination);
-                            }
+                            await source.CopyToAsync(destination);
                         }
                     }
                 }
-            });
-            return await GetBrowserNodesAsync(path);
+            }
+            return GetBrowserNodes(path);
         }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="createDirectory"></param>
         /// <returns></returns>
-        public async Task<Node> CreateDirectory(CreateDirectory createDirectory)
+        public Node CreateDirectory(CreateDirectory createDirectory)
         {
             string path = $"{createDirectory.Path}/{createDirectory.Name}";
-            await Task.Run(() =>
+            if (!Directory.Exists(path))
             {
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-            });
-            return await GetBrowserNodesAsync(path);
+                Directory.CreateDirectory(path);
+            }
+            return GetBrowserNodes(path);
         }
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<Node> CreateFile(CreateFile createFile)
+        public Node CreateFile(CreateFile createFile)
         {
             string path = $"{createFile.Path}/{createFile.Name}";
-            await Task.Run(() =>
+            if (!File.Exists(path))
             {
-                if (!File.Exists(path))
-                {
-                    File.Create(path);
-                }
-            });
-            return await GetBrowserNodesAsync(createFile.Path);
+                File.Create(path);
+            }
+            return GetBrowserNodes(createFile.Path);
         }
         /// <summary>
         /// 
@@ -212,8 +196,6 @@ namespace Browsing
                 {
                     reader.BaseStream.CopyTo(ms);
                 }
-               // byte[] documentsBytes = new byte[ms.Length];
-               // ms.GetBuffer().CopyTo(documentsBytes, ms.Length);
                 return new Node
                 {
                     Path = directoryInfo.FullName,

@@ -15,7 +15,7 @@ namespace Browsing
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        Task<Node> GetBrowserNodesAsync(string path);
+        Node GetBrowserNodes(string path);
         /// <summary>
         /// 
         /// </summary>
@@ -27,13 +27,13 @@ namespace Browsing
         /// </summary>
         /// <param name="removeNodes"></param>
         /// <returns></returns>
-        Task DeleteNodesAsync(RemoveNodes removeNodes);
+        void DeleteNodes(RemoveNodes removeNodes);
         /// <summary>
         /// 
         /// </summary>
         /// <param name="moveNodes"></param>
         /// <returns></returns>
-        Task<Node> MoveNodesAsync(MoveNodes moveNodes);
+        Node MoveNodes(MoveNodes moveNodes);
         /// <summary>
         /// 
         /// </summary>
@@ -45,12 +45,12 @@ namespace Browsing
         /// </summary>
         /// <param name="createDirectory"></param>
         /// <returns></returns>
-        Task<Node> CreateDirectory(CreateDirectory createDirectory);
+        Node CreateDirectory(CreateDirectory createDirectory);
         /// <summary>
         /// 
         /// </summary>
         /// <param name="createFile"></param>
         /// <returns></returns>
-        Task<Node> CreateFile(CreateFile createFile);
+        Node CreateFile(CreateFile createFile);
     }
 }

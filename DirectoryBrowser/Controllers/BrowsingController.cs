@@ -19,9 +19,9 @@ namespace DirectoryBrowser.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Node>> Get(string path)
+        public ActionResult<Node> Get(string path)
         {
-            Node toReturn = await _browser.GetBrowserNodesAsync(path);
+            Node toReturn = _browser.GetBrowserNodes(path);
             return Ok(toReturn);
         }
 
@@ -36,9 +36,9 @@ namespace DirectoryBrowser.Controllers
 
         [Route("MoveNodes")]
         [HttpPost]
-        public async Task<ActionResult<Node>> MoveNodes([FromBody] MoveNodes moveNodes)
+        public ActionResult<Node> MoveNodes([FromBody] MoveNodes moveNodes)
         {
-            Node node = await _browser.MoveNodesAsync(moveNodes);
+            Node node = _browser.MoveNodes(moveNodes);
             return Ok(node);
         }
 
@@ -50,27 +50,26 @@ namespace DirectoryBrowser.Controllers
             return Ok(node);
         }
 
-
         [Route("CreateDirectory")]
         [HttpPut]
-        public async Task<ActionResult<Node>> CreateDirectory([FromBody] CreateDirectory createDirectory)
+        public ActionResult<Node> CreateDirectory([FromBody] CreateDirectory createDirectory)
         {
-            Node node = await _browser.CreateDirectory(createDirectory);
+            Node node = _browser.CreateDirectory(createDirectory);
             return Ok(node);
         }
 
         [Route("CreateFile")]
         [HttpPut]
-        public async Task<ActionResult<Node>> CreateDirectory([FromBody] CreateFile createFile)
+        public ActionResult<Node> CreateDirectory([FromBody] CreateFile createFile)
         {
-            Node node = await _browser.CreateFile(createFile);
+            Node node = _browser.CreateFile(createFile);
             return Ok(node);
         }
 
         [HttpDelete]
-        public async Task<ActionResult> Delete(RemoveNodes removeNodes)
+        public ActionResult Delete(RemoveNodes removeNodes)
         {
-            await _browser.DeleteNodesAsync(removeNodes);
+            _browser.DeleteNodes(removeNodes);
             return Ok();
         }
     }
