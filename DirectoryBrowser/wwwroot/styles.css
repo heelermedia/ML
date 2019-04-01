@@ -1,0 +1,109 @@
+﻿/*header*/
+#header {
+    background-color:#ffffff;
+}
+#header .feather {
+    width: 25px;
+    height: 25px;
+}
+
+#header .head {
+    position: relative;
+    top: 5px;
+}
+/*end header*/
+
+/*info*/
+#info {
+    position: relative;
+    top: 7px;
+}
+#info p {
+    /*padding: .75em 1rem*/
+}
+/*end info*/
+
+/*browser*/
+#browser .custom-file-input {
+    position:relative;
+    left: 25px;
+    height:30px;
+    width: 30px;
+    /*cursor:pointer;*/
+}
+#browser .feather-upload {
+    /*cursor:pointer;
+    z-index:10;*/
+}
+#browser .feather {
+    width: 15px;
+    height: 15px;
+}
+
+#browser li {
+    list-style-type: none;
+}
+
+#browser li:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+#browser li:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+#browser li a {
+    /*cursor: pointer;*/
+    position: relative;
+    top: 1px;
+    text-decoration: underline;
+}
+
+#browser li a:hover {
+    text-decoration: none;
+}
+/*end browser*/
+
+
+
+/*bread crumbs*/
+#breadcrumbs .breadcrumb {
+    background-color: #ffffff;
+    margin-bottom: 0px;
+    padding: .75em 1rem;
+}
+
+#breadcrumbs a {
+    text-decoration:underline;
+}
+
+#breadcrumbs a:hover {
+    text-decoration: none;
+}
+
+#breadcrumbs .breadcrumb-item + .breadcrumb-item::before {
+    content: "\00BB";
+}
+
+/*.breadcrumb-item {
+    a .disabled
+
+{
+    pointer-events: none;
+    cursor: not-allowed;
+    cursor: not-allowed;
+    color: #5e5e5e;
+    text-decoration: none;
+}
+
+a {
+    cursor: pointer;
+    color: #4285f4;
+    text-decoration: underline;
+}
+
+}*/
+
+
+
+/*end bread crumbs*/

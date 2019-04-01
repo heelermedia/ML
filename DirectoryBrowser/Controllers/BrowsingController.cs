@@ -27,9 +27,10 @@ namespace DirectoryBrowser.Controllers
 
         [Route("UploadFiles")]
         [HttpPost]
-        public async Task<ActionResult<Node>> UploadFiles([FromBody] FileUpload fileUpload)
+        public async Task<ActionResult<Node>> UploadFiles(IList<IFormFile> files)
         {
-            Node node = await _browser.UploadFilesAsync(fileUpload);
+            string path = HttpContext.Request?.Headers["X-File-Path"];
+            Node node = await _browser.UploadFilesAsync(new FileUpload(files, path));
             return Ok(node);
         }
 

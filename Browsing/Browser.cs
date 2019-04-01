@@ -13,6 +13,8 @@ namespace Browsing
     /// </summary>
     public class Browser : IBrowser
     {
+        const string _defaultDirectory = @"C:\\";
+
         public Browser()
         {
         }
@@ -23,12 +25,25 @@ namespace Browsing
         /// <returns></returns>
         public async Task<Node> GetBrowserNodesAsync(string path)
         {
-            DirectoryInfo directoryInfo = new DirectoryInfo(path);
-            Node rootNode = CreateRootNode(directoryInfo);
-            rootNode.Children = new List<Node>();
-            rootNode.Children.AddRange(CreateDirectoryNodes(directoryInfo));
-            rootNode.Children.AddRange(CreateFileNodes(directoryInfo));
-            return await Task.FromResult(rootNode);
+            try
+            {
+                if (string.IsNullOrEmpty(path)) path = _defaultDirectory;
+                DirectoryInfo directoryInfo = new DirectoryInfo(path);
+                Node rootNode = CreateRootNode(directoryInfo);
+                rootNode.Children = new List<Node>();
+                List<Node> directories = CreateDirectoryNodes(directoryInfo);
+                rootNode.DirectoryCount = directories.Count();
+                rootNode.Children.AddRange(directories);
+                List<Node> files = CreateFileNodes(directoryInfo);
+                rootNode.FileCount = files.Count();
+                rootNode.Children.AddRange(files);
+
+                return await Task.FromResult(rootNode);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
         /// <summary>
         /// 
@@ -44,7 +59,7 @@ namespace Browsing
             {
                 if (formFile.Length > 0)
                 {
-                    using (var stream = new FileStream(path, FileMode.Create))
+                    using (var stream = new FileStream(Path.Combine(path, formFile.FileName), FileMode.Create))
                     {
                         await formFile.CopyToAsync(stream);
                     }
@@ -150,7 +165,7 @@ namespace Browsing
                 {
                     Directory.CreateDirectory(path);
                 }
-              
+
             });
             return await GetBrowserNodesAsync(path);
         }
@@ -177,13 +192,40 @@ namespace Browsing
         /// <returns></returns>
         private Node CreateRootNode(DirectoryInfo directoryInfo)
         {
-            return new Node
+            if (directoryInfo.Exists)
             {
-                Path = directoryInfo.FullName,
-                Parent = directoryInfo.Parent.FullName,
-                Root = directoryInfo.Root.FullName,
-                Name = directoryInfo.Name
-            };
+                return new Node
+                {
+                    Path = directoryInfo.FullName,
+                    Parent = directoryInfo.Parent.FullName,
+                    Root = directoryInfo.Root.FullName,
+                    Name = directoryInfo.Name,
+                    IsFile = false,
+                    HasChildren = directoryInfo.EnumerateFileSystemInfos("*", SearchOption.TopDirectoryOnly).Any()
+                };
+            }
+            else
+            {
+                string path = directoryInfo.FullName;
+                MemoryStream ms = new MemoryStream();
+                using (StreamReader reader = new StreamReader(path))
+                {
+                    reader.BaseStream.CopyTo(ms);
+                }
+               // byte[] documentsBytes = new byte[ms.Length];
+               // ms.GetBuffer().CopyTo(documentsBytes, ms.Length);
+                return new Node
+                {
+                    Path = directoryInfo.FullName,
+                    Parent = directoryInfo.Parent.FullName,
+                    Root = directoryInfo.Root.FullName,
+                    Name = directoryInfo.Name,
+                    IsFile = true,
+                    HasChildren = false,
+                    Content = Encoding.UTF8.GetString(ms.GetBuffer())
+                };
+            }
+
         }
         /// <summary>
         /// 
@@ -192,18 +234,22 @@ namespace Browsing
         /// <returns></returns>
         private List<Node> CreateDirectoryNodes(DirectoryInfo directoryInfo)
         {
-            IEnumerable<DirectoryInfo> directoryInfos = directoryInfo.EnumerateDirectories("*", SearchOption.TopDirectoryOnly);
             List<Node> directoryNodes = new List<Node>();
-            foreach (DirectoryInfo dirInfo in directoryInfos)
+            if (directoryInfo.Exists)
             {
-                directoryNodes.Add(new Node
+                IEnumerable<DirectoryInfo> directoryInfos = directoryInfo.EnumerateDirectories("*", SearchOption.TopDirectoryOnly);
+                foreach (DirectoryInfo dirInfo in directoryInfos)
                 {
-                    Path = dirInfo.FullName,
-                    Parent = dirInfo.Parent.FullName,
-                    Root = dirInfo.Root.FullName,
-                    Name = dirInfo.Name,
-                    IsFile = false
-                });
+                    directoryNodes.Add(new Node
+                    {
+                        Path = dirInfo.FullName,
+                        Parent = dirInfo.Parent.FullName,
+                        Root = dirInfo.Root.FullName,
+                        Name = dirInfo.Name,
+                        IsFile = false,
+                        HasChildren = dirInfo.EnumerateFileSystemInfos("*", SearchOption.TopDirectoryOnly).Any()
+                    });
+                }
             }
             return directoryNodes;
         }
@@ -214,18 +260,21 @@ namespace Browsing
         /// <returns></returns>
         private List<Node> CreateFileNodes(DirectoryInfo directoryInfo)
         {
-            IEnumerable<FileInfo> filesInfos = directoryInfo.EnumerateFiles("*", SearchOption.TopDirectoryOnly);
             List<Node> fileNodes = new List<Node>();
-            foreach (FileInfo fileInfo in filesInfos)
+            if (directoryInfo.Exists)
             {
-                fileNodes.Add(new Node
+                IEnumerable<FileInfo> filesInfos = directoryInfo.EnumerateFiles("*", SearchOption.TopDirectoryOnly);
+                foreach (FileInfo fileInfo in filesInfos)
                 {
-                    Path = fileInfo.FullName,
-                    Parent = fileInfo.Directory.FullName,
-                    Root = fileInfo.Directory.Root.FullName,
-                    Name = fileInfo.Name,
-                    IsFile = true
-                });
+                    fileNodes.Add(new Node
+                    {
+                        Path = fileInfo.FullName,
+                        Parent = fileInfo.Directory.FullName,
+                        Root = fileInfo.Directory.Root.FullName,
+                        Name = fileInfo.Name,
+                        IsFile = true
+                    });
+                }
             }
             return fileNodes;
         }

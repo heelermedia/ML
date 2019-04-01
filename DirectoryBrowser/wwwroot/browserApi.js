@@ -1,0 +1,81 @@
+﻿var BrowserApi = (function () {
+
+    function BrowserApi() {
+    }
+
+    BrowserApi.prototype.fetch = function (config, context) {
+        var request = new XMLHttpRequest();
+        request.responseType = 'json';
+        request.open(config.verb, config.url, true);
+        request.onreadystatechange = function () {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                config.callback.call(context, this.response);
+            }
+        };
+        switch (config.verb) {
+            case 'GET':
+                request.send();
+                break;
+            case 'POST':
+            case 'PUT':
+            case 'DELETE':
+                if (config.data && config.data.isFileUpload) {
+                    request.setRequestHeader("X-File-Path", config.data.path);
+                    request.send(config.data.files);
+                } else {
+                    request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+                    request.send(JSON.stringify(config.data));
+                }
+                break;
+            default: break;
+        }
+    }
+
+    BrowserApi.prototype.getBrowserNodes = function (path, callback, context) {
+        var ajaxConfig = {
+            verb: 'GET',
+            url: `http://localhost:63674/api/browsing?path=${path}`,
+            callback: callback
+        };
+        this.fetch(ajaxConfig, context);
+    }
+
+    BrowserApi.prototype.uploadFiles = function (formData, callback, context) {
+        var ajaxConfig = {
+            verb: 'POST',
+            url: `http://localhost:63674/api/browsing/UploadFiles`,
+            callback: callback,
+            data: formData
+        };
+        this.fetch(ajaxConfig, context);
+    }
+
+    BrowserApi.prototype.moveNodes = function (moveNodes, callback, context) {
+
+
+    }
+
+    BrowserApi.prototype.copyNodes = function (copyNodes, callback, context) {
+
+    }
+
+    BrowserApi.prototype.createDirectory = function (createDirectoryModel, callback, context) {
+        var ajaxConfig = {
+            verb: 'PUT',
+            url: `http://localhost:63674/api/browsing/CreateDirectory`,
+            callback: callback,
+            data: createDirectoryModel
+        };
+        this.fetch(ajaxConfig, context);
+    }
+
+    BrowserApi.prototype.createFile = function () {
+
+    }
+
+    BrowserApi.prototype.deleteNodes = function () {
+
+    }
+
+    return BrowserApi;
+}());

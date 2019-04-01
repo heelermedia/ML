@@ -8,6 +8,12 @@ namespace Browsing
     public class FileUpload
     {
         public string Path { get; set; }
-        public List<IFormFile> Files { get; set; }
+        public IList<IFormFile> Files { get; set; }
+        public FileUpload(IList<IFormFile> files, string path)
+        {
+            this.Path = path;
+            this.Files = files;
+        }
+      
     }
 }
