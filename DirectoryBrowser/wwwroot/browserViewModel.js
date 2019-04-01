@@ -10,7 +10,7 @@
     }
 
     BrowserViewModel.prototype.initialize = function () {
-        var path = "C:\\Users\\andre\\OneDrive\\Desktop\\Dirs";
+        var path = "C:\\Projects\\angular-tab-control-clone\\ClientApp";
         DB.BrowserApi.getBrowserNodes(path, this.nodesRetrieved, this);
     }
 

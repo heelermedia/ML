@@ -10,6 +10,8 @@
         this.hasChildren = ko.observable(data.hasChildren);
         this.content = ko.observable(data.content ? data.content : null);
 
+        this.fileData = ko.observable();
+
         this.showNewFolderNameInput = ko.observable(false);
         this.newDirectoryName = ko.observable();
 
@@ -21,16 +23,6 @@
         }, this);
         this.isDirectory = ko.pureComputed(function () {
             return n.showFolder() || n.showFolderPlus();
-        }, this);
-
-        this.iconCssClass = ko.pureComputed(function () {
-            return n.isFile()
-                ? "jstree-icon jstree-themeicon fa fa-file jstree-themeicon-custom"
-                : "jstree-icon jstree-themeicon";
-        }, this);
-
-        this.nodeOpenCssClass = ko.pureComputed(function () {
-            return n.children().length > 0 ? "jstree-node jstree-open" : "jstree-node jstree-closed";
         }, this);
 
         if (data.children) {
@@ -64,12 +56,14 @@
         this.showNewFolderNameInput(false);
         DB.Events.publish('createDirectory', { path: this.path, name: this.newDirectoryName() });
     }
+    NodeViewModel.prototype.downloadFile = function () {
+        DB.BrowserApi.downloadFile({ path: this.path, isFileDownload: true }, this.fileDataRetrieved, this);
+    };
+    NodeViewModel.prototype.fileDataRetrieved = function (fileData) {
+        this.fileData(fileData);
+    };
     NodeViewModel.prototype.dispose = function () {
 
     };
     return NodeViewModel;
 }());
-
-
-
-

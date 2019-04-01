@@ -52,5 +52,11 @@ namespace Browsing
         /// <param name="createFile"></param>
         /// <returns></returns>
         Node CreateFile(CreateFile createFile);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        byte[] DownloadFile(string path);
     }
 }

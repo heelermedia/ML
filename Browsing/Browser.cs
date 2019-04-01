@@ -260,5 +260,15 @@ namespace Browsing
             }
             return fileNodes;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public byte[] DownloadFile(string path)
+        {
+            byte[] bytes = File.ReadAllBytes(path);
+            return bytes;
+        }
     }
 }

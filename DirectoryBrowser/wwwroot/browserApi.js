@@ -6,6 +6,9 @@
     BrowserApi.prototype.fetch = function (config, context) {
         var request = new XMLHttpRequest();
         request.responseType = 'json';
+        if (config.data && config.data.isFileDownload) {
+            request.responseType = 'blob';
+        }
         request.open(config.verb, config.url, true);
         request.onreadystatechange = function () {
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
@@ -71,6 +74,16 @@
 
     BrowserApi.prototype.createFile = function () {
 
+    }
+
+    BrowserApi.prototype.downloadFile = function (downloadFileModel, callback, context) {
+        var ajaxConfig = {
+            verb: 'GET',
+            url: `http://localhost:63674/api/browsing/DownloadFile?path=${downloadFileModel.path}`,
+            callback: callback,
+            data: downloadFileModel
+        };
+        this.fetch(ajaxConfig, context);
     }
 
     BrowserApi.prototype.deleteNodes = function () {

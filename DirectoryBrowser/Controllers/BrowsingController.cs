@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Browsing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace DirectoryBrowser.Controllers
 {
@@ -23,6 +26,29 @@ namespace DirectoryBrowser.Controllers
         {
             Node toReturn = _browser.GetBrowserNodes(path);
             return Ok(toReturn);
+        }
+
+        [Route("DownloadFile")]
+        [HttpGet]
+        public IActionResult DownloadFile(string path)
+        {
+            byte[] fileBytes = _browser.DownloadFile(path);
+            FileExtensionContentTypeProvider provider = new FileExtensionContentTypeProvider();
+            string contentType;
+            string fileName = Path.GetFileName(path);
+            if (!provider.TryGetContentType(fileName, out contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+            ContentDisposition cd = new ContentDisposition
+            {
+                FileName = fileName,
+                Inline = false  
+            };
+            Response.Headers.Add("Content-Disposition", cd.ToString());
+            Response.Headers.Add("X-Content-Type-Options", "nosniff");
+            return File(fileBytes, contentType, fileName);
+
         }
 
         [Route("UploadFiles")]

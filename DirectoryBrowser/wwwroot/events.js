@@ -29,11 +29,9 @@
     }
 
     Events.prototype.subscribe = function (eventName, callBack, context) {
-      
         this.register(eventName, context);
         var eventObj = this.events[eventName];
         eventObj.subscribers.push(callBack);
-       
     }
 
     Events.prototype.unsubscribe = function (eventName, callBack) {
