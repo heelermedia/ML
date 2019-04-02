@@ -1,4 +1,9 @@
-﻿/*header*/
+﻿a {
+    font-size:.8em;
+}
+
+
+/*header*/
 #header {
     background-color:#ffffff;
 }
@@ -40,6 +45,11 @@
     height: 15px;
 }
 
+#browser .nodeAction {
+    text-decoration:none;
+
+}
+
 #browser li {
     list-style-type: none;
 }
@@ -70,7 +80,7 @@
 #breadcrumbs .breadcrumb {
     background-color: #ffffff;
     margin-bottom: 0px;
-    padding: .75em 1rem;
+    padding: 0em 0rem;
 }
 
 #breadcrumbs a {

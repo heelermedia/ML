@@ -93,7 +93,7 @@ namespace DirectoryBrowser.Controllers
         }
 
         [HttpDelete]
-        public ActionResult Delete(RemoveNodes removeNodes)
+        public ActionResult Delete([FromBody]RemoveNodes removeNodes)
         {
             _browser.DeleteNodes(removeNodes);
             return Ok();

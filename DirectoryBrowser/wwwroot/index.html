@@ -72,8 +72,7 @@
         <hr />
 
 
-
-        <div class="row border">
+        <div class="row">
 
             <div class="col-lg-6">
 
@@ -83,7 +82,25 @@
 
                         <li class="breadcrumb-item">
 
-                            <a href="#">Browser</a>
+                            <a href="#">Users</a>
+
+                        </li>
+
+                        <li class="breadcrumb-item">
+
+                            <a href="#">andre</a>
+
+                        </li>
+
+                        <li class="breadcrumb-item">
+
+                            <a href="#">OneDrive</a>
+
+                        </li>
+
+                        <li class="breadcrumb-item">
+
+                            <a href="#">Desktop</a>
 
                         </li>
 
@@ -100,7 +117,6 @@
             </div>
 
         </div>
-
 
 
 
@@ -124,7 +140,7 @@
 
                                     <svg data-bind="visible: isFile" class="feather feather-file-text" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
 
-                                    <a data-bind="click:nodeClicked" class="" href="javascript:void(0)" title="Explore">
+                                    <a data-bind="click:nodeClicked" class="nodeAction" href="javascript:void(0)" title="Explore">
 
                                         <span data-bind="text:name"></span>
 
@@ -140,7 +156,7 @@
 
                                     <svg data-bind="visible:!showNewFolderNameInput()" class="feather feather-upload text-primary" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
 
-                                    <a data-bind="click:addNewDirectory, visible:!showNewFolderNameInput()" href="javascript:void(0)" class="" title="Add New Directory">
+                                    <a data-bind="click:addNewDirectory, visible:!showNewFolderNameInput()" href="javascript:void(0)" class="nodeAction" title="Add New Directory">
 
                                         <svg class="feather feather-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
 
@@ -148,7 +164,13 @@
 
                                     <input data-bind="textInput:newDirectoryName, visible:showNewFolderNameInput" class="form-control form-control-sm col-lg-3 ml-2 float-right" type="text" placeholder="Name New Directory">
 
-                                    <a data-bind="click:saveNewDirectory, visible:showNewFolderNameInput" href="javascript:void(0)" class="" title="Save New Directory">
+                                    <a href="javascript:void(0)" class="nodeAction" title="Delete Directory">
+
+                                        <svg class="feather feather-x" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+
+                                    </a>
+
+                                    <a data-bind="click:saveNewDirectory, visible:showNewFolderNameInput" href="javascript:void(0)" class="nodeAction" title="Save New Directory">
 
                                         <svg class="feather feather-save" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
 
@@ -176,7 +198,7 @@
 
                                             <svg data-bind="visible: isFile" class="feather feather-file-text" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
 
-                                            <a data-bind="click:nodeClicked" href="javascript:void(0)" class="" title="Explore">
+                                            <a data-bind="click:nodeClicked" href="javascript:void(0)" class="nodeAction" title="Explore">
 
                                                 <span data-bind="text:name"></span>
 
@@ -192,7 +214,7 @@
 
                                             <svg data-bind="visible:!showNewFolderNameInput()" class="feather feather-upload text-primary" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
 
-                                            <a data-bind="click:addNewDirectory, visible:!showNewFolderNameInput()" href="javascript:void(0)" class="" title="Add New Directory">
+                                            <a data-bind="click:addNewDirectory, visible:!showNewFolderNameInput()" href="javascript:void(0)" class="nodeAction" title="Add New Directory">
 
                                                 <svg class="feather feather-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
 
@@ -200,9 +222,15 @@
 
                                             <input data-bind="textInput:newDirectoryName, visible:showNewFolderNameInput" class="form-control form-control-sm col-lg-3 ml-2 float-right" type="text" placeholder="Name New Directory">
 
-                                            <a data-bind="click:saveNewDirectory, visible:showNewFolderNameInput" href="javascript:void(0)" class="" title="Save New Directory">
+                                            <a data-bind="click:saveNewDirectory, visible:showNewFolderNameInput" href="javascript:void(0)" class="nodeAction" title="Save New Directory">
 
                                                 <svg class="feather feather-save" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+
+                                            </a>
+
+                                            <a data-bind="click:removeNodes" href="javascript:void(0)" class="nodeAction" title="Delete Directory">
+
+                                                <svg class="feather feather-x" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
 
                                             </a>
 
@@ -210,9 +238,15 @@
 
                                         <div data-bind="visible: !isDirectory()" class="col-lg-9 text-right">
 
-                                            <a data-bind="click:downloadFile, downloadFileBinding: fileData" href="javascript:void(0)" class="" title="Download File">
+                                            <a data-bind="click:downloadFile, downloadFileBinding: fileData" href="javascript:void(0)" class="nodeAction" title="Download File">
 
                                                 <svg class="feather feather-download" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+
+                                            </a>
+
+                                            <a data-bind="click:removeNodes" href="javascript:void(0)" class="nodeAction" title="Delete File">
+
+                                                <svg class="feather feather-x" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
 
                                             </a>
 

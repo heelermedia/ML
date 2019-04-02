@@ -7,10 +7,11 @@
         DB.Events.subscribe('nodeClicked', this.nodeClicked, this);
         DB.Events.subscribe('fileUpload', this.uploadFiles, this);
         DB.Events.subscribe('createDirectory', this.createDirectory, this);
+        DB.Events.subscribe('removeNodes', this.removeNodes, this);
     }
 
     BrowserViewModel.prototype.initialize = function () {
-        var path = "C:\\Projects\\angular-tab-control-clone\\ClientApp";
+        var path = "C:\\Users\\andre\\OneDrive\\Desktop\\Dirs";
         DB.BrowserApi.getBrowserNodes(path, this.nodesRetrieved, this);
     }
 
@@ -35,10 +36,21 @@
         DB.BrowserApi.createDirectory(createDirectoryModel, this.nodesRetrieved, this);
     }
 
+    BrowserViewModel.prototype.removeNodes = function (removeNodesModel) {
+        var node = this.nodes();
+        if (node.children() && node.children().length > 0) {
+            var children = node.children();
+            children.splice(children.indexOf(removeNodesModel.NodesToRemove[0]), 1);
+        }
+        node.children.valueHasMutated();
+        DB.BrowserApi.removeNodes(removeNodesModel, null, this);
+    }
+
     BrowserViewModel.prototype.dispose = function () {
         DB.Events.unsubscribe('nodeClicked', this.nodesRetrieved);
         DB.Events.unsubscribe('fileUpload', this.uploadFiles);
         DB.Events.unsubscribe('createDirectory', this.createDirectory);
+        DB.Events.unsubscribe('removeNodes', this.removeNodes);
     }
 
     return BrowserViewModel;

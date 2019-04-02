@@ -12,7 +12,9 @@
         request.open(config.verb, config.url, true);
         request.onreadystatechange = function () {
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                config.callback.call(context, this.response);
+                if (config.callback) {
+                    config.callback.call(context, this.response);
+                }
             }
         };
         switch (config.verb) {
@@ -86,8 +88,14 @@
         this.fetch(ajaxConfig, context);
     }
 
-    BrowserApi.prototype.deleteNodes = function () {
-
+    BrowserApi.prototype.removeNodes = function (removeNodesModel, callback, context) {
+        var ajaxConfig = {
+            verb: 'DELETE',
+            url: `http://localhost:63674/api/browsing`,
+            callback: callback,
+            data: removeNodesModel
+        };
+        this.fetch(ajaxConfig, context);
     }
 
     return BrowserApi;

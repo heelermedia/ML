@@ -52,7 +52,7 @@
     NodeViewModel.prototype.addNewDirectory = function () {
         this.showNewFolderNameInput(true);
     }
-    NodeViewModel.prototype.saveNewDirectory = function () {
+    NodeViewModel.prototype.saveNewDirectory = function (node) {
         this.showNewFolderNameInput(false);
         DB.Events.publish('createDirectory', { path: this.path, name: this.newDirectoryName() });
     }
@@ -61,6 +61,9 @@
     };
     NodeViewModel.prototype.fileDataRetrieved = function (fileData) {
         this.fileData(fileData);
+    };
+    NodeViewModel.prototype.removeNodes = function (node) {
+        DB.Events.publish('removeNodes', { NodesToRemove: [node] });
     };
     NodeViewModel.prototype.dispose = function () {
 
