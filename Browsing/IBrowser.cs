@@ -55,6 +55,12 @@ namespace Browsing
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        Node Search(Search search);
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
         byte[] DownloadFile(string path);

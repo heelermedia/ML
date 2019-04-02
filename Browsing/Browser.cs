@@ -270,5 +270,10 @@ namespace Browsing
             byte[] bytes = File.ReadAllBytes(path);
             return bytes;
         }
+
+        public Node Search(Search search)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

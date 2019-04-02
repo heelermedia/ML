@@ -71,6 +71,22 @@
 
         <hr />
 
+        <form id="searchView" class="form-inline">
+
+            <!--<select class="form-control form-control-sm  mb-2" data-bind="options: searchOptions, value: selectedSearchOption"></select>-->
+
+            <div class="form-group mx-sm-3 mb-2">
+
+                <label for="searchText" class="sr-only">Search Text</label>
+
+                <input data-bind="textInput:searchText" type="text" class="form-control form-control-sm" id="searchText" placeholder="Search Text">
+
+            </div>
+
+            <a data-bind="click:search" href="javascript:void(0)" class="mb-2">Search</a>
+
+        </form>
+
 
         <div class="row">
 
@@ -280,6 +296,7 @@
     <script src="deps/ko.js"></script>
     <script src="downloadFileBinding.js"></script>
     <script src="events.js"></script>
+    <script src="searchViewModel.js"></script>
     <script src="nodeViewModel.js"></script>
     <script src="browserApi.js"></script>
     <script src="infoViewModel.js"></script>
