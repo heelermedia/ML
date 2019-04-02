@@ -98,5 +98,15 @@
         this.fetch(ajaxConfig, context);
     }
 
+    BrowserApi.prototype.search = function (searchModel, callback, context) {
+        var ajaxConfig = {
+            verb: 'POST',
+            url: `http://localhost:63674/api/browsing`,
+            callback: callback,
+            data: searchModel
+        };
+        this.fetch(ajaxConfig, context);
+    }
+
     return BrowserApi;
 }());

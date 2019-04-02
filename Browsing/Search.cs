@@ -7,6 +7,6 @@ namespace Browsing
     public class Search
     {
         public string Path { get; set; }
-        public bool SearchDirectory { get; set; };
+        public string SearchText { get; set; }
     }
 }

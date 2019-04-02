@@ -23,7 +23,7 @@ namespace Browsing
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public Node GetBrowserNodes(string path)
+        public Node GetBrowserNodes(string path, string searchPattern = null)
         {
             try
             {
@@ -270,10 +270,14 @@ namespace Browsing
             byte[] bytes = File.ReadAllBytes(path);
             return bytes;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public Node Search(Search search)
         {
-            throw new NotImplementedException();
+            return GetBrowserNodes(search.Path, search.SearchText);
         }
     }
 }

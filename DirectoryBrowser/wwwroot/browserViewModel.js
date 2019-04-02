@@ -8,6 +8,7 @@
         DB.Events.subscribe('fileUpload', this.uploadFiles, this);
         DB.Events.subscribe('createDirectory', this.createDirectory, this);
         DB.Events.subscribe('removeNodes', this.removeNodes, this);
+        DB.Events.subscribe('searchResultsRetrieved', this.searchResultsRetrieved, this);
     }
 
     BrowserViewModel.prototype.initialize = function () {
@@ -46,11 +47,16 @@
         DB.BrowserApi.removeNodes(removeNodesModel, null, this);
     }
 
+    BrowserViewModel.prototype.searchResultsRetrieved = function (node) {
+        this.nodesRetrieved(node);
+    }
+
     BrowserViewModel.prototype.dispose = function () {
         DB.Events.unsubscribe('nodeClicked', this.nodesRetrieved);
         DB.Events.unsubscribe('fileUpload', this.uploadFiles);
         DB.Events.unsubscribe('createDirectory', this.createDirectory);
         DB.Events.unsubscribe('removeNodes', this.removeNodes);
+        DB.Events.unsubscribe('searchResultsRetrieved', this.searchResultsRetrieved);
     }
 
     return BrowserViewModel;

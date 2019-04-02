@@ -15,7 +15,7 @@ namespace Browsing
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        Node GetBrowserNodes(string path);
+        Node GetBrowserNodes(string path, string searchPattern = null);
         /// <summary>
         /// 
         /// </summary>

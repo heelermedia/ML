@@ -15,6 +15,11 @@
     }
 
     SearchViewModel.prototype.search = function (node) {
+        DB.BrowserApi.search({}, this.searchNodesComplete, this);
+    }
+
+    SearchViewModel.prototype.searchNodesComplete = function (node) {
+        DB.Events.publish('searchResultsRetrieved', node);
     }
 
     return SearchViewModel;

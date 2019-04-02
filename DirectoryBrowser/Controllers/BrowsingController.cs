@@ -76,6 +76,13 @@ namespace DirectoryBrowser.Controllers
             return Ok(node);
         }
 
+        [Route("Search")]
+        [HttpPost]
+        public ActionResult<Node> Search([FromBody] Search searchModel)
+        {
+            Node node = _browser.Search(searchModel);
+            return Ok(node);
+        }
         [Route("CreateDirectory")]
         [HttpPut]
         public ActionResult<Node> CreateDirectory([FromBody] CreateDirectory createDirectory)
@@ -98,5 +105,6 @@ namespace DirectoryBrowser.Controllers
             _browser.DeleteNodes(removeNodes);
             return Ok();
         }
+
     }
 }
