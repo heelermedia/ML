@@ -1,21 +1,26 @@
 ﻿{
   "type": "container",
+  "id": "container",
   "contentTemplates": [
     {
       "type": "infoView",
-      "viewModel": "infoViewModel"
+      "viewModel": "InfoViewModel",
+      "id": "info"
     },
     {
       "type": "searchView",
-      "viewModel": "searchViewModel"
+      "viewModel": "SearchViewModel",
+      "id": "searchView"
     },
     {
-      "type": "breadCrumbsView",
-      "viewModel": "breadCrumbsViewModel"
+      "type": "breadcrumbs",
+      "viewModel": "BreadCrumbsViewModel",
+      "id": "breadcrumbs"
     },
     {
       "type": "browserView",
-      "viewModel": "browserViewModel"
+      "viewModel": "BrowserViewModel",
+      "id": "info"
     }
   ]
 }

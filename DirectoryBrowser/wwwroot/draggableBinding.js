@@ -1,18 +1,4 @@
-﻿//the start and end index used for column reordering
-//the start index is the index of the table header being dragged 
-//that directly correlates to the underlying object in an array which
-//was used to build the table header elements
-var startIndex = -1;
-//end index - same but it's the drop targets index - in the underlying array 
-//I will shift the object at the original index to it's new location at endIndex
-var endIndex = -1;
-
-//are we dragging left or right from start position
-//if we are dragging left the over indicator needs to be left justified of the over target
-//other wise if we are dragging right it needs to be right justified over the over target
-var startPosition = -1;
-var dragDelta = -1;
-
+﻿
 var nodeToMove = null;
 
 ko.bindingHandlers.draggable = {
