@@ -11,11 +11,11 @@
     }
 
     SearchViewModel.prototype.nodeInfoChanged = function (node) {
-        //this.selectedRootNode(node);
+        this.selectedRootNode(node);
     }
 
     SearchViewModel.prototype.search = function (node) {
-        DB.BrowserApi.search({}, this.searchNodesComplete, this);
+        DB.BrowserApi.search({ path: this.selectedRootNode().path, searchText: this.searchText() }, this.searchNodesComplete, this);
     }
 
     SearchViewModel.prototype.searchNodesComplete = function (node) {

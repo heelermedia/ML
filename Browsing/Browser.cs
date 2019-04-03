@@ -31,10 +31,10 @@ namespace Browsing
                 DirectoryInfo directoryInfo = new DirectoryInfo(path);
                 Node rootNode = CreateRootNode(directoryInfo);
                 rootNode.Children = new List<Node>();
-                List<Node> directories = CreateDirectoryNodes(directoryInfo);
+                List<Node> directories = CreateDirectoryNodes(directoryInfo, searchPattern);
                 rootNode.DirectoryCount = directories.Count();
                 rootNode.Children.AddRange(directories);
-                List<Node> files = CreateFileNodes(directoryInfo);
+                List<Node> files = CreateFileNodes(directoryInfo, searchPattern);
                 rootNode.FileCount = files.Count();
                 rootNode.Children.AddRange(files);
 
@@ -77,7 +77,7 @@ namespace Browsing
         {
             foreach (Node node in removeNodes.NodesToRemove)
             {
-                DirectoryInfo directoryInfo = new DirectoryInfo(node.Path);
+                DirectoryInfo directoryInfo = new DirectoryInfo(node.Parent);
                 if (directoryInfo.Exists)
                 {
                     directoryInfo.Delete(true);
@@ -214,23 +214,31 @@ namespace Browsing
         /// </summary>
         /// <param name="directoryInfo"></param>
         /// <returns></returns>
-        private List<Node> CreateDirectoryNodes(DirectoryInfo directoryInfo)
+        private List<Node> CreateDirectoryNodes(DirectoryInfo directoryInfo, string searchPattern = null)
         {
+            searchPattern = ToSearchPattern(searchPattern);
             List<Node> directoryNodes = new List<Node>();
             if (directoryInfo.Exists)
             {
-                IEnumerable<DirectoryInfo> directoryInfos = directoryInfo.EnumerateDirectories("*", SearchOption.TopDirectoryOnly);
+                IEnumerable<DirectoryInfo> directoryInfos = directoryInfo.EnumerateDirectories(searchPattern, SearchOption.TopDirectoryOnly);
                 foreach (DirectoryInfo dirInfo in directoryInfos)
                 {
-                    directoryNodes.Add(new Node
+                    try
                     {
-                        Path = dirInfo.FullName,
-                        Parent = dirInfo.Parent.FullName,
-                        Root = dirInfo.Root.FullName,
-                        Name = dirInfo.Name,
-                        IsFile = false,
-                        HasChildren = dirInfo.EnumerateFileSystemInfos("*", SearchOption.TopDirectoryOnly).Any()
-                    });
+                        directoryNodes.Add(new Node
+                        {
+                            Path = dirInfo.FullName,
+                            Parent = dirInfo.Parent.FullName,
+                            Root = dirInfo.Root.FullName,
+                            Name = dirInfo.Name,
+                            IsFile = false,
+                            HasChildren = dirInfo.EnumerateFileSystemInfos("*", SearchOption.TopDirectoryOnly).Any()
+                        });
+                    }
+                    catch (Exception e)
+                    {
+                        continue;
+                    }
                 }
             }
             return directoryNodes;
@@ -240,25 +248,44 @@ namespace Browsing
         /// </summary>
         /// <param name="directoryInfo"></param>
         /// <returns></returns>
-        private List<Node> CreateFileNodes(DirectoryInfo directoryInfo)
+        private List<Node> CreateFileNodes(DirectoryInfo directoryInfo, string searchPattern = null)
         {
+            searchPattern = ToSearchPattern(searchPattern);
             List<Node> fileNodes = new List<Node>();
             if (directoryInfo.Exists)
             {
-                IEnumerable<FileInfo> filesInfos = directoryInfo.EnumerateFiles("*", SearchOption.TopDirectoryOnly);
+                IEnumerable<FileInfo> filesInfos = directoryInfo.EnumerateFiles(searchPattern, SearchOption.TopDirectoryOnly);
                 foreach (FileInfo fileInfo in filesInfos)
                 {
-                    fileNodes.Add(new Node
+                    try
                     {
-                        Path = fileInfo.FullName,
-                        Parent = fileInfo.Directory.FullName,
-                        Root = fileInfo.Directory.Root.FullName,
-                        Name = fileInfo.Name,
-                        IsFile = true
-                    });
+                        fileNodes.Add(new Node
+                        {
+                            Path = fileInfo.FullName,
+                            Parent = fileInfo.Directory.FullName,
+                            Root = fileInfo.Directory.Root.FullName,
+                            Name = fileInfo.Name,
+                            IsFile = true
+                        });
+                    }
+                    catch (Exception e)
+                    {
+                        continue;
+                    }
                 }
             }
             return fileNodes;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searchPattern"></param>
+        /// <returns></returns>
+        private string ToSearchPattern(string searchPattern)
+        {
+            if (string.IsNullOrEmpty(searchPattern)) searchPattern = "*";
+            else searchPattern = $"*{searchPattern}*";
+            return searchPattern;
         }
         /// <summary>
         /// 

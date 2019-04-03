@@ -1,0 +1,21 @@
+﻿{
+  "type": "container",
+  "contentTemplates": [
+    {
+      "type": "infoView",
+      "viewModel": "infoViewModel"
+    },
+    {
+      "type": "searchView",
+      "viewModel": "searchViewModel"
+    },
+    {
+      "type": "breadCrumbsView",
+      "viewModel": "breadCrumbsViewModel"
+    },
+    {
+      "type": "browserView",
+      "viewModel": "browserViewModel"
+    }
+  ]
+}

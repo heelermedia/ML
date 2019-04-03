@@ -55,9 +55,14 @@
         this.fetch(ajaxConfig, context);
     }
 
-    BrowserApi.prototype.moveNodes = function (moveNodes, callback, context) {
-
-
+    BrowserApi.prototype.moveNodes = function (moveNodesModel, callback, context) {
+        var ajaxConfig = {
+            verb: 'POST',
+            url: `http://localhost:63674/api/browsing/MoveNodes`,
+            callback: callback,
+            data: moveNodesModel
+        };
+        this.fetch(ajaxConfig, context);
     }
 
     BrowserApi.prototype.copyNodes = function (copyNodes, callback, context) {
@@ -101,7 +106,7 @@
     BrowserApi.prototype.search = function (searchModel, callback, context) {
         var ajaxConfig = {
             verb: 'POST',
-            url: `http://localhost:63674/api/browsing`,
+            url: `http://localhost:63674/api/browsing/Search`,
             callback: callback,
             data: searchModel
         };

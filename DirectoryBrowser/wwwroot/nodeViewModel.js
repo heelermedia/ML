@@ -1,15 +1,19 @@
 ﻿var NodeViewModel = (function () {
     function NodeViewModel(data) {
         var n = this;
+        this.keys = Object.keys(data);
         this.path = data.path;
         this.parent = data.parent;
         this.root = data.root;
         this.name = data.name;
         this.children = ko.observableArray([]);
+        this.lines = ko.observableArray([]);
         this.isFile = ko.observable(data.isFile);
         this.hasChildren = ko.observable(data.hasChildren);
         this.content = ko.observable(data.content ? data.content : null);
-
+        if (this.content()) {
+            this.lines(this.toFileLines(this.content()));
+        }
         this.fileData = ko.observable();
 
         this.showNewFolderNameInput = ko.observable(false);
@@ -29,6 +33,7 @@
             this.createChildren(data.children);
         }
     }
+
     NodeViewModel.prototype.nodeClicked = function () {
         DB.Events.publish('nodeClicked', { ...this });
     };
@@ -64,6 +69,17 @@
     };
     NodeViewModel.prototype.removeNodes = function (node) {
         DB.Events.publish('removeNodes', { NodesToRemove: [node] });
+    };
+    NodeViewModel.prototype.toFileLines = function (fileContent) {
+        return fileContent.split('\n');
+    };
+    NodeViewModel.prototype.toDto = function (keys) {
+        var nodeDto = {};
+        for (var i = 0; i <= keys.length - 1; i++) {
+            var key = keys[i];
+            nodeDto[key] = ko.utils.unwrapObservable(this[key]);
+        }
+        return nodeDto;
     };
     NodeViewModel.prototype.dispose = function () {
 

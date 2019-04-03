@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Browsing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,7 @@ namespace DirectoryBrowser
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -45,19 +47,20 @@ namespace DirectoryBrowser
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             app.UseStaticFiles();
-          
+
             app.UseMvc();
             app.UseSpaStaticFiles();
             app.UseSpa(spa =>
             {
-
                 spa.Options.SourcePath = "wwwroot";
             });
+
         }
     }
 }

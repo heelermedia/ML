@@ -12,26 +12,27 @@
     Events.prototype.register = function (eventName, context) {
         if (!this.exists(eventName)) {
             this.events[eventName] = {};
-            this.events[eventName].context = context;
             this.events[eventName].subscribers = [];
         }
     }
 
     Events.prototype.publish = function () {
         var args = [].slice.call(arguments);
+        //Array.from(args);
         var eventName = args.shift();
         if (this.exists(eventName)) {
             var eventObj = this.events[eventName];
             eventObj.subscribers.forEach(function (subscriber) {
-                subscriber.apply(eventObj.context, args);
+                subscriber.callBack.apply(subscriber.context, args);
             });
         }
     }
 
     Events.prototype.subscribe = function (eventName, callBack, context) {
+        //console.log(`Event Name: ${eventName} Context: ${context.constructor.name}`);
         this.register(eventName, context);
         var eventObj = this.events[eventName];
-        eventObj.subscribers.push(callBack);
+        eventObj.subscribers.push({ callBack: callBack, context: context, key: context.constructor.name, eventName: eventName });
     }
 
     Events.prototype.unsubscribe = function (eventName, callBack) {

@@ -1,4 +1,5 @@
-﻿function initialize() {
+﻿
+function initialize() {
 
     window.DirectoryBrowser = DB = {};
 
@@ -11,8 +12,12 @@
     DB.ViewModels.InfoViewModel = InfoViewModel;
     DB.ViewModels.NodeViewModel = NodeViewModel;
     DB.ViewModels.SearchViewModel = SearchViewModel;
+    DB.ViewModels.BreadCrumbsViewModel = BreadCrumbsViewModel;
+
 
     DB.Events = new Events();
+
+    ko.applyBindings(new DB.ViewModels.BreadCrumbsViewModel(), document.getElementById('breadcrumbs'));
 
     ko.applyBindings(new DB.ViewModels.BrowserViewModel(), document.getElementById('browser'));
 
@@ -20,6 +25,10 @@
 
     ko.applyBindings(new DB.ViewModels.SearchViewModel(), document.getElementById('searchView'));
 
+    DB.Router = new Router();
 }
 
-initialize();
+
+window.onload = function () {
+    initialize();
+}
