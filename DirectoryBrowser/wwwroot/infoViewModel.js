@@ -1,11 +1,12 @@
 ﻿var InfoViewModel = (function () {
 
-    function InfoViewModel() {
-        var self = this;
-        self.rootDirectory = ko.observable('');
-        self.directoryCount = ko.observable(0);
-        self.fileCount = ko.observable(0);
-        DB.Events.subscribe('rootNodeChanged', this.nodeInfoChanged, this);
+    function InfoViewModel(events, browserApi) {
+        this.events = events;
+        this.browserApi = browserApi;
+        this.rootDirectory = ko.observable('');
+        this.directoryCount = ko.observable(0);
+        this.fileCount = ko.observable(0);
+        this.events.subscribe('rootNodeChanged', this.nodeInfoChanged, this);
     }
 
     InfoViewModel.prototype.nodeInfoChanged = function (node) {

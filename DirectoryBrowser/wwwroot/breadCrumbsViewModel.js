@@ -1,17 +1,21 @@
 ﻿var BreadCrumbsViewModel = (function () {
-    function BreadCrumbsViewModel() {
+    function BreadCrumbsViewModel(events, browserApi) {
         var self = this;
-        self.breadCrumbs = ko.observableArray([]);
-        DB.Events.subscribe('breadCrumbsChanged', this.breadCrumbsChanged, this);
+        this.events = events;
+        this.browserApi = browserApi;
+        this.breadCrumbs = ko.observableArray([]);
+        this.events.subscribe('breadCrumbsChanged', this.breadCrumbsChanged, this);
+        this.navigate = function (breadCrumb) {
+            var crumb = { ...breadCrumb };
+            crumb.path = crumb.serverPath;
+            self.events.publish('nodeClicked', crumb);
+        };
     };
     BreadCrumbsViewModel.prototype.breadCrumbsChanged = function (historyStack) {
         this.breadCrumbs(historyStack);
     };
-
-    BreadCrumbsViewModel.prototype.navigate = function (breadCrumb) {
-        var crumb = { ...breadCrumb };
-        crumb.path = crumb.serverPath;
-        DB.Events.publish('nodeClicked', crumb);
-    };
+    BreadCrumbsViewModel.prototype.dispose = function (node) {
+        this.events.unsubscribe('breadCrumbsChanged', this.breadCrumbsChanged);
+    }
     return BreadCrumbsViewModel;
 }());

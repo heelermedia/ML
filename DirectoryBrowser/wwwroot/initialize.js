@@ -1,14 +1,15 @@
-﻿
-function initialize() {
+﻿function initialize() {
 
     var json = {
         "type": "container",
         "id": "container",
+        "isModal": false,
+        "useContainerCssClass": true,
         "viewDefinitions": [
             {
-                "type": "infoView",
-                "viewModel": "InfoViewModel",
-                "id": "info"
+                "type": "headerView",
+                "viewModel": "HeaderViewModel",
+                "id": "header"
             },
             {
                 "type": "searchView",
@@ -16,9 +17,20 @@ function initialize() {
                 "id": "searchView"
             },
             {
-                "type": "breadCrumbsView",
-                "viewModel": "BreadCrumbsViewModel",
-                "id": "breadcrumbs"
+                "type": "container",
+                "useContainerCssClass": false,
+                "viewDefinitions": [
+                    {
+                        "type": "breadCrumbsView",
+                        "viewModel": "BreadCrumbsViewModel",
+                        "id": "breadcrumbs"
+                    },
+                    {
+                        "type": "infoView",
+                        "viewModel": "InfoViewModel",
+                        "id": "infoView"
+                    },
+                ]
             },
             {
                 "type": "browserView",
@@ -28,40 +40,24 @@ function initialize() {
         ]
     };
 
-
-
     window.DirectoryBrowser = DB = {};
 
     DB.BrowserApi = new BrowserApi();
 
-  
+    DB.Events = new Events();
 
     DB.ViewModels = {};
+    DB.ViewModels.HeaderViewModel = HeaderViewModel;
     DB.ViewModels.BrowserViewModel = BrowserViewModel;
     DB.ViewModels.InfoViewModel = InfoViewModel;
     DB.ViewModels.NodeViewModel = NodeViewModel;
     DB.ViewModels.SearchViewModel = SearchViewModel;
     DB.ViewModels.BreadCrumbsViewModel = BreadCrumbsViewModel;
 
-
-    DB.Events = new Events();
-
-
-    DB.Renderer = new Renderer(DB.ViewModels);
-
-    //ko.applyBindings(new DB.ViewModels.BreadCrumbsViewModel(), document.getElementById('breadcrumbs'));
-
-    //ko.applyBindings(new DB.ViewModels.BrowserViewModel(), document.getElementById('browser'));
-
-    //ko.applyBindings(new DB.ViewModels.InfoViewModel(), document.getElementById('info'));
-
-    //ko.applyBindings(new DB.ViewModels.SearchViewModel(), document.getElementById('searchView'));
-
+    DB.Renderer = new Renderer(DB);
     DB.Renderer.render('body', json);
-
-    DB.Router = new Router();
+    DB.Router = new Router(DB.Events);
 }
-
 
 window.onload = function () {
     initialize();

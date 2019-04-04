@@ -1,28 +1,27 @@
-﻿a {
+﻿a, p {
     font-size: .8em;
+}
+a {
+    text-decoration:underline;
 }
 
 /*header*/
-#info {
+#header {
     background-color: #ffffff;
 }
 
-#info .feather {
+#header .feather {
     width: 25px;
     height: 25px;
 }
 
-#info .list-inline-item .head {
+#header .list-inline-item .head {
     position: relative;
     top: 5px;
 }
 /*end header*/
 
 /*info*/
-#info {
-    position: relative;
-    top: 7px;
-}
 
 #info p {
 /*padding: .75em 1rem*/
@@ -50,19 +49,26 @@
 
 #browser .nodeAction {
     text-decoration: underline;
-    margin-left: 2px;
-    margin-right: 2px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
-#browser .nodeAction + .nodeAction::after {
+/*#browser .nodeAction + .nodeAction::after  {
     content: "|";
     margin-left: 2px;
-}
+}*/
 
 #browser .icon {
     width: 20px;
 }
 
+#browser .fileInput{
+    font-size:.8em;
+    width: 90px;
+}
+#browser td {
+    cursor:pointer;
+}
 .table-sm td, .table-sm th {
     padding: .1rem;
 }
@@ -123,11 +129,14 @@ a {
     position: fixed;
     z-index: 1004;
     top: 100px;
-    left: 300px;
-    width: 900px;
+    left: 475px;
+    width: 1000px;
     background-color: white;
     border: 1px solid #DFDFDF;
     border-radius: 5px;
+    padding-top: .5em;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
 }
 
 /*end widget window*/

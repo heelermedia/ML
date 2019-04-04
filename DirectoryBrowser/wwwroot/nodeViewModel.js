@@ -1,6 +1,10 @@
 ﻿var NodeViewModel = (function () {
-    function NodeViewModel(data) {
+    function NodeViewModel(data, events, browserApi) {
         var n = this;
+
+        this.events = events;
+        this.browserApi = browserApi;
+
         this.keys = Object.keys(data);
         this.path = data.path;
         this.parent = data.parent;
@@ -38,9 +42,8 @@
             this.createChildren(data.children);
         }
     }
-
     NodeViewModel.prototype.nodeClicked = function () {
-        DB.Events.publish('nodeClicked', { ...this });
+        this.events.publish('nodeClicked', { ...this });
     };
     NodeViewModel.prototype.viewActions = function () {
         this.showActions(!this.showActions());
@@ -60,23 +63,23 @@
         for (var i = 0; i < files.length; i++) {
             formData.append("files", files[i]);
         }
-        DB.Events.publish('fileUpload', { path: this.path, files: formData, isFileUpload: true });
+        this.events.publish('fileUpload', { path: this.path, files: formData, isFileUpload: true });
     }
     NodeViewModel.prototype.addNewDirectory = function () {
         this.showNewFolderNameInput(true);
     }
     NodeViewModel.prototype.saveNewDirectory = function (node) {
         this.showNewFolderNameInput(false);
-        DB.Events.publish('createDirectory', { path: this.path, name: this.newDirectoryName() });
+        this.events.publish('createDirectory', { path: this.path, name: this.newDirectoryName() });
     }
     NodeViewModel.prototype.downloadFile = function () {
-        DB.BrowserApi.downloadFile({ path: this.path, isFileDownload: true }, this.fileDataRetrieved, this);
+        this.browserApi.downloadFile({ path: this.path, isFileDownload: true }, this.fileDataRetrieved, this);
     };
     NodeViewModel.prototype.fileDataRetrieved = function (fileData) {
         this.fileData(fileData);
     };
     NodeViewModel.prototype.removeNodes = function (node) {
-        DB.Events.publish('removeNodes', { NodesToRemove: [node] });
+        this.events.publish('removeNodes', { NodesToRemove: [node] });
     };
     NodeViewModel.prototype.toFileLines = function (fileContent) {
         return fileContent.split('\n');

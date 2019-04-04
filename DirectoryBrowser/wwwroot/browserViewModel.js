@@ -1,20 +1,18 @@
 ﻿var BrowserViewModel = (function () {
 
-    function BrowserViewModel() {
-        var self = this;
-        self.nodes = ko.observableArray([]);
-        //this.initialize();
-        DB.Events.subscribe('routeChanged', this.initialize, this);
-        DB.Events.subscribe('nodeClicked', this.nodeClicked, this);
-        DB.Events.subscribe('fileUpload', this.uploadFiles, this);
-        DB.Events.subscribe('createDirectory', this.createDirectory, this);
-        DB.Events.subscribe('removeNodes', this.removeNodes, this);
-        DB.Events.subscribe('searchResultsRetrieved', this.searchResultsRetrieved, this);
-    }
+    function BrowserViewModel(events, browserApi) {
 
-    BrowserViewModel.prototype.initialize = function (path) {
-        var p = path ? path : "C:\\Projects\\knockout-asp-net-core";
-        DB.BrowserApi.getBrowserNodes(p, this.nodesRetrieved, this);
+        this.nodes = ko.observableArray([]);
+
+        this.events = events;
+        this.browserApi = browserApi;
+
+        this.events.subscribe('routeChanged', this.initialize, this);
+        this.events.subscribe('nodeClicked', this.nodeClicked, this);
+        this.events.subscribe('fileUpload', this.uploadFiles, this);
+        this.events.subscribe('createDirectory', this.createDirectory, this);
+        this.events.subscribe('removeNodes', this.removeNodes, this);
+        this.events.subscribe('searchResultsRetrieved', this.searchResultsRetrieved, this);
     }
 
     BrowserViewModel.prototype.nodesRetrieved = function (node) {
@@ -22,42 +20,43 @@
         if (existingNode && existingNode.dispose) {
             existingNode.dispose();
         }
-        DB.Events.publish('rootNodeChanged', { ...node });
+        this.events.publish('rootNodeChanged', { ...node });
         this.nodes([]);
         this.createNodes(node.children, this.nodes);
     }
 
+    BrowserViewModel.prototype.initialize = function (path) {
+        var p = path ? path : "C:\\Projects\\knockout-asp-net-core";
+        this.browserApi.getBrowserNodes(p, this.nodesRetrieved, this);
+    }
+
     BrowserViewModel.prototype.nodeClicked = function (node) {
-        DB.BrowserApi.getBrowserNodes(node.path, this.nodesRetrieved, this);
+        this.browserApi.getBrowserNodes(node.path, this.nodesRetrieved, this);
     }
 
     BrowserViewModel.prototype.uploadFiles = function (formData) {
-        DB.BrowserApi.uploadFiles(formData, this.nodesRetrieved, this);
+        this.browserApi.uploadFiles(formData, this.nodesRetrieved, this);
     }
 
     BrowserViewModel.prototype.createDirectory = function (createDirectoryModel) {
-        DB.BrowserApi.createDirectory(createDirectoryModel, this.nodesRetrieved, this);
+        this.browserApi.createDirectory(createDirectoryModel, this.nodesRetrieved, this);
     }
 
     BrowserViewModel.prototype.removeNodes = function (removeNodesModel) {
         this.removeNode(removeNodesModel.NodesToRemove[0], this.nodes)
-        DB.BrowserApi.removeNodes(removeNodesModel, null, this);
+        this.browserApi.removeNodes(removeNodesModel, null, this);
     }
 
-    BrowserViewModel.prototype.searchResultsRetrieved = function (nodeToRemove, nodes) {
-        var node = nodes();
-        if (node.children() && node.children().length > 0) {
-            var children = node.children();
-            children.splice(children.indexOf(removeNodesModel.NodesToRemove[0]), 1);
-        }
-        node.children.valueHasMutated();
+    BrowserViewModel.prototype.searchResultsRetrieved = function (node) {
+        this.nodes([]);
+        this.createNodes(node.children, this.nodes);
     }
     BrowserViewModel.prototype.createNodes = function (nodeData, nodes) {
         var nodesArray = nodes();
         var l = nodeData.length;
         var i = -1;
         while (++i < l) {
-            nodesArray.push(new DB.ViewModels.NodeViewModel(nodeData[i]));
+            nodesArray.push(new DB.ViewModels.NodeViewModel(nodeData[i], this.events, this.browserApi));
         }
         nodes.valueHasMutated();
     };
@@ -67,17 +66,16 @@
     }
 
     BrowserViewModel.prototype.moveNodes = function (moveNodeModel) {
-        DB.BrowserApi.moveNodes(moveNodeModel, this.nodesRetrieved, this);
+        this.browserApi.moveNodes(moveNodeModel, this.nodesRetrieved, this);
     }
-
-
-
     BrowserViewModel.prototype.dispose = function () {
-        DB.Events.unsubscribe('nodeClicked', this.nodesRetrieved);
-        DB.Events.unsubscribe('fileUpload', this.uploadFiles);
-        DB.Events.unsubscribe('createDirectory', this.createDirectory);
-        DB.Events.unsubscribe('removeNodes', this.removeNodes);
-        DB.Events.unsubscribe('searchResultsRetrieved', this.searchResultsRetrieved);
+        this.nodes([]);
+        this.events.unsubscribe('routeChanged', this.initialize);
+        this.events.unsubscribe('nodeClicked', this.nodeClicked);
+        this.events.unsubscribe('fileUpload', this.uploadFiles);
+        this.events.unsubscribe('createDirectory', this.createDirectory);
+        this.events.unsubscribe('removeNodes', this.removeNodes);
+        this.events.unsubscribe('searchResultsRetrieved', this.searchResultsRetrieved);
     }
 
     return BrowserViewModel;

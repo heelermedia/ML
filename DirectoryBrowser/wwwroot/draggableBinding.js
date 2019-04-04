@@ -7,22 +7,18 @@ ko.bindingHandlers.draggable = {
 
         //get bound value object
         var value = ko.unwrap(valueAccessor());
-        var element = $(element);
+        var el = $(element);
         var parentViewModel = bindingContext.$parent;
 
         //make th's draggable
-        element.draggable({
+        el.draggable({
             cursor: "arrow",
             distance: 10,
             zIndex: 1000,
-            //helper: function (event) {
-            //    //create helper and adjust to be correct width and height to match table head
-            //    var el = $(this);
-            //    var width = el.outerWidth(),
-            //        height = el.outerHeight();
-            //    dragHelperTemplate.attr({ "style": "width:" + width + "px;height:" + height + "px;z-index:9999;" });
-            //    return dragHelperTemplate;
-            //},
+            helper: function (event) {
+                var el = $(this);
+                return el.clone();
+            },
             start: function (event, ui) {
                 //track start position
                 //startPosition = ui.offset.left;
@@ -70,7 +66,7 @@ ko.bindingHandlers.draggable = {
         //overIndicatorTemplate.append(lia).append(lib);
 
         //make th's droppable
-        element.droppable({
+        el.droppable({
             over: function (event, ui) {
 
                 //var helper = $(ui.helper);
@@ -155,6 +151,14 @@ ko.bindingHandlers.draggable = {
                 //startPosition = -1;
                 //dragDelta = -1;
             }
+        });
+
+
+        ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
+            el.draggable('destroy');
+            el.droppable('destroy');
+            parentViewModel = null;
+            nodeToMove = null;
         });
 
     }

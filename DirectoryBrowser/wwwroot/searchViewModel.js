@@ -1,26 +1,25 @@
 ﻿var SearchViewModel = (function () {
-
-    function SearchViewModel() {
-        var self = this;
-        self.searchOptions = ko.observableArray(['Search Files', 'Search Directories']);
-        self.selectedSearchOption = ko.observable(self.searchOptions()[0]);
-        self.searchText = ko.observable();
-        self.selectedRootNode = ko.observable();
-
-        DB.Events.subscribe('rootNodeChanged', this.nodeInfoChanged, this);
+    function SearchViewModel(events, browserApi) {
+        this.events = events;
+        this.browserApi = browserApi;
+        this.searchOptions = ko.observableArray(['Search Files', 'Search Directories']);
+        this.selectedSearchOption = ko.observable(this.searchOptions()[0]);
+        this.searchText = ko.observable();
+        this.selectedRootNode = ko.observable();
+        this.events.subscribe('rootNodeChanged', this.nodeInfoChanged, this);
     }
-
     SearchViewModel.prototype.nodeInfoChanged = function (node) {
         this.selectedRootNode(node);
     }
-
     SearchViewModel.prototype.search = function (node) {
-        DB.BrowserApi.search({ path: this.selectedRootNode().path, searchText: this.searchText() }, this.searchNodesComplete, this);
+        this.browserApi.search({ path: this.selectedRootNode().path, searchText: this.searchText() }, this.searchNodesComplete, this);
     }
-
     SearchViewModel.prototype.searchNodesComplete = function (node) {
-        DB.Events.publish('searchResultsRetrieved', node);
+        this.events.publish('searchResultsRetrieved', node);
+        this.searchText('');
     }
-
+    SearchViewModel.prototype.dispose = function (node) {
+        this.events.unsubscribe('rootNodeChanged', this.nodeInfoChanged);
+    }
     return SearchViewModel;
 }());

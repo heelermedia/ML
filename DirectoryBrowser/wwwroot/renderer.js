@@ -1,34 +1,90 @@
-﻿
+﻿var Renderer = (function () {
 
-var Renderer = (function () {
-
-    function Renderer(viewModels) {
-        var self = this;
-        self.viewModels = viewModels;
+    function Renderer(directoryBrowser) {
+        this.directoryBrowser = directoryBrowser;
+        this.activeViewModels = [];
+        this.viewDefinition = {};
+        this.directoryBrowser.Events.subscribe('tearOutBrowser', this.tearOutBrowser, this);
     }
+    Renderer.prototype.render = function (target, viewDefinition) {
+        this.viewDefinition = viewDefinition;
+        var view = this.getView(viewDefinition.type, viewDefinition);
+        $(target || 'body').append(view)
+        this.applyDataContexts(viewDefinition.viewDefinitions);
 
+    };
+    Renderer.prototype.tearOutBrowser = function () {
+        //this.directoryBrowser.Events.unsubscribeAll(['tearOutBrowser']);
+        this.tearDown(this.activeViewModels);
+        ko.cleanNode(document.body);
+        $('body').empty()
+        if (this.viewDefinition.isModal) {
+            this.viewDefinition.type = this.viewDefinition.id = 'container';
+        } else {
+            this.viewDefinition.type = this.viewDefinition.id = 'modalWindow';
+        }
+        //this.directoryBrowser.Events.unsubscribeAll();
+        this.viewDefinition.isModal = !this.viewDefinition.isModal;
+        this.render('body', this.viewDefinition);
+        this.directoryBrowser.Router.initialize();
+    };
+    Renderer.prototype.getViews = function (viewDefinitions) {
+        var views = [];
+        var viewDefinitions = viewDefinitions || [];
+        for (var i = 0; i < viewDefinitions.length; i++) {
+            var viewDefinition = viewDefinitions[i];
+            var element = this.getView(viewDefinition.type, viewDefinition);
+            views.push(element);
+        }
+        return views;
+    };
+    Renderer.prototype.applyDataContexts = function (viewDefinitions) {
+        var viewDefinitions = viewDefinitions || [];
+        for (var i = 0; i < viewDefinitions.length; i++) {
+            var viewDefinition = viewDefinitions[i];
+            if (viewDefinition.hasOwnProperty('viewDefinitions')) this.applyDataContexts(viewDefinition.viewDefinitions);
+            if (viewDefinition.hasOwnProperty('viewModel') && viewDefinition.hasOwnProperty('id')) {
+                var viewModel = this.getViewModel(viewDefinition);
+                ko.applyBindings(viewModel, document.getElementById(viewDefinition.id));
+            }
+        }
+    };
+    Renderer.prototype.getViewModel = function (viewDefinition) {
+        var viewModel = new this.directoryBrowser.ViewModels[viewDefinition.viewModel](this.directoryBrowser.Events, this.directoryBrowser.BrowserApi);
+        this.activeViewModels.push(viewModel);
+        return viewModel;
+    };
+    Renderer.prototype.tearDown = function (activeViewModels) {
+        var l = activeViewModels.length;
+        while (l--) {
+            var viewModel = activeViewModels.shift();
+            if (viewModel.dispose) {
+                viewModel.dispose();
+                viewModel = null;
+            }
+        }
+    };
+    Renderer.prototype.getView = function (key) {
+        return this[key] && this[key].apply(this, [].slice.call(arguments, 1));
+    };
     Renderer.prototype.modalWindow = function (viewDefinition) {
         var modalWindow = $('<div>', { id: viewDefinition.id, class: 'modalWindow' });
         var content = this.getViews(viewDefinition.viewDefinitions);
         modalWindow.append(content);
         return modalWindow.draggable();
-    }
-
+    };
     Renderer.prototype.container = function (viewDefinition) {
-        var container = $('<div>', { id: viewDefinition.id, class: 'container' });
+        var container = $('<div>', { id: viewDefinition.id, class: viewDefinition.useContainerCssClass ? 'container' : 'row' });
         var content = this.getViews(viewDefinition.viewDefinitions);
         container.append(content);
         return container;
-    }
+    };
+    Renderer.prototype.headerView = function (viewDefinition) {
 
-    Renderer.prototype.infoView = function (viewDefinition) {
+        var header = $('<div>', { id: viewDefinition.id, class: 'row mb-2' });
+        var columnA = $('<div>', { class: 'col-lg-4 pl-0' });
 
-        var header = $('<nav>', { id: viewDefinition.id, class: 'sticky-top flex-md-nowrap pt-2' });
-
-        var row = $('<div>', { class: 'row' });
-        var columnA = $('<div>', { class: 'col-lg-4' });
-
-        var ul = $('<ul>', { class: 'list-inline mb-0 ' });
+        var ul = $('<ul>', { class: 'list-inline mb-0' });
         var li = $('<li>', { class: 'list-inline-item' });
         var logoAction = $('<a>', { href: 'javascript:void(0)', title: 'Directory Browser' });
         var folderIcon = this.svgs('folder');
@@ -42,59 +98,63 @@ var Renderer = (function () {
 
         columnA.append(ul);
 
-        var columnB = $('<div>', { class: 'col-lg-8' });
+        var columnB = $('<div>', { class: 'col-lg-8 pl-0 text-right' });
+        var tearOutAction = $('<a>', { 'data-bind': 'click:tearOutBrowser', href: 'javascript:void(0)', class: 'mb-2', title: this.viewDefinition.isModal ? 'Put Back Directory Browser' : 'Tear Out Directory Browser' });
+        columnB.append(tearOutAction.append(this.viewDefinition.isModal ? 'put back' : 'tear out'));
+
+        header.append(columnA).append(columnB);
+
+        return header;
+    };
+    Renderer.prototype.infoView = function (viewDefinition) {
+
+        var infoView = $('<div>', { id: viewDefinition.id, class: 'col-lg-6 pr-0' });
+
+        var column = $('<div>', { class: 'col-lg-12' });
         var innerRow = $('<div>', { class: 'row' });
 
         var innerColumnA = $('<div>', { class: 'col-lg-6 text-right' });
-        var pA = $('<p>', { class: 'text-uppercase pb-0 mb-0' });
+        var pA = $('<p>', { class: 'pb-0 mb-0' });
         pA.append('Active Directory:');
-        var spanA = $('<span>', { 'data-bind': 'text: rootDirectory', class: 'font-weight-bold text-primary' });
+        var spanA = $('<span>', { 'data-bind': 'text: rootDirectory', class: 'font-weight-bold text-primary ml-2' });
         innerColumnA.append(pA.append(spanA));
 
         var innerColumnB = $('<div>', { class: 'col-lg-3 text-right' });
-        var pB = $('<p>', { class: 'text-uppercase pb-0 mb-0' });
+        var pB = $('<p>', { class: 'pb-0 mb-0' });
         pB.append('Directories:');
-        var spanB = $('<span>', { 'data-bind': 'text: directoryCount', class: 'font-weight-bold text-primary' });
+        var spanB = $('<span>', { 'data-bind': 'text: directoryCount', class: 'font-weight-bold text-primary ml-2' });
         innerColumnB.append(pB.append(spanB));
 
         var innerColumnC = $('<div>', { class: 'col-lg-3 text-right' });
-        var pC = $('<p>', { class: 'text-uppercase pb-0 mb-0' });
+        var pC = $('<p>', { class: 'pb-0 mb-0' });
         pC.append('Files:');
-        var spanC = $('<span>', { 'data-bind': 'text: fileCount', class: 'font-weight-bold text-primary' });
+        var spanC = $('<span>', { 'data-bind': 'text: fileCount', class: 'font-weight-bold text-primary ml-2' });
         innerColumnC.append(pC.append(spanC));
 
         innerRow.append(innerColumnA).append(innerColumnB).append(innerColumnC);
-        columnB.append(innerRow);
 
-        row.append(columnA).append(columnB);
+        infoView.append(column.append(innerRow));
 
-        header.append(row);
-
-        return header;
-
-    }
-
+        return infoView;
+    };
     Renderer.prototype.searchView = function (viewDefinition) {
-        var searchView = $('<div>', { id: viewDefinition.id, class: 'row mt-3' });
-        var leftColumn = $('<div>', { class: 'col-lg-4' });
+        var searchView = $('<div>', { id: viewDefinition.id, class: 'row' });
+        var leftColumn = $('<div>', { class: 'col-lg-4 pl-0 pr-0' });
         var searchTextFormGroup = $('<div>', { class: 'form-group mb-2' });
         var searchTextLabel = $('<label>', { class: 'sr-only', for: 'searchText' });
-        var searchInput = $('<input>', { 'data-bind': 'textInput:searchText', type: 'text', class: 'form-control form-control-sm', id: 'searchText', placeholder: 'Search Text' });
+        var searchInput = $('<input>', { 'data-bind': 'textInput:searchText', type: 'text', class: 'form-control form-control-sm', id: 'searchText', placeholder: 'Search' });
         searchTextFormGroup.append(searchTextLabel).append(searchInput);
         leftColumn.append(searchTextFormGroup);
-        var rightColumn = $('<div>', { class: 'col-lg-8' });
-        var searchAction = $('<a>', { 'data-bind': 'click:search', href: 'javascript:void(0)', class: 'mb-2' });
-        searchAction.append('Search')
+        var rightColumn = $('<div>', { class: 'col-lg-8 pl-1 pr-0' });
+        var searchAction = $('<a>', { 'data-bind': 'click:search', href: 'javascript:void(0)', class: 'mb-2', title: 'Search' });
+        searchAction.append('search')
         rightColumn.append(searchAction);
         searchView.append(leftColumn);
         searchView.append(rightColumn);
         return searchView;
-    }
-
-
+    };
     Renderer.prototype.breadCrumbsView = function (viewDefinition) {
-        var breadCrumbs = $('<div>', { id: viewDefinition.id, class: 'row' });
-        var column = $('<div>', { class: 'col-lg-6 pl-0' });
+        var breadCrumbs = $('<div>', { id: viewDefinition.id, class: 'col-lg-6 pl-0' });
         var nav = $('<nav>', {});
         var ol = $('<ol>', { 'data-bind': 'foreach: breadCrumbs', class: 'breadcrumb' });
         var li = $('<li>', { class: 'breadcrumb-item' });
@@ -102,11 +162,9 @@ var Renderer = (function () {
         li.append(navigateAction);
         ol.append(li);
         nav.append(ol);
-        column.append(nav);
-        breadCrumbs.append(column);
+        breadCrumbs.append(nav);
         return breadCrumbs;
-    }
-
+    };
     Renderer.prototype.browserView = function (viewDefinition) {
 
         var browser = $('<div>', { id: viewDefinition.id, class: 'row' });
@@ -141,7 +199,7 @@ var Renderer = (function () {
         nodeTd.append(nodeClickedAction);
 
         var actionsTd = $('<td>', { class: 'actions text-right' });
-        var gearAction = $('<a>', { 'data-bind':'click:viewActions, attr: { title:showActionsTitle }', href: 'javascript:void(0)', class: 'nodeAction', title: 'Actions' });
+        var gearAction = $('<a>', { 'data-bind': 'click:viewActions, attr: { title:showActionsTitle }', href: 'javascript:void(0)', class: 'nodeAction', title: 'Actions' });
         var gearIcon = this.svgs('gear');
         actionsTd.append(gearAction.append(gearIcon));
 
@@ -149,12 +207,9 @@ var Renderer = (function () {
 
         browser.append(table.append(tbody.append(trow)));
 
-        //var fileUploadInput = $('<input>', { 'data-bind': 'event:{ change:filesSelected }, visible:!showNewFolderNameInput()', type: 'file', class: 'custom-file-input' });
-        //TODO: add multiple
-        //actionsTd.append(fileUploadInput);
-
-        // var uploadIcon = this.svgs('upload');
-        // actionsTd.append('upload files');
+        var fileUploadInput = $('<input>', { 'data-bind': 'event:{ change:filesSelected }, visible:(!showNewFolderNameInput() && isDirectory() && showActions())', type: 'file', class: 'fileInput' });
+        fileUploadInput.attr('multiple', '');
+        actionsTd.append(fileUploadInput);
 
         var addDirectoryAction = $('<a>', { 'data-bind': 'click:addNewDirectory, visible:(!showNewFolderNameInput() && isDirectory() && showActions())', href: 'javascript:void(0)', class: 'nodeAction', title: 'Add New Directory' });
         var showFolderIcon = this.svgs('plus');
@@ -172,7 +227,6 @@ var Renderer = (function () {
         removeNodesAction.append('delete');
         actionsTd.append(removeNodesAction);
 
-
         var downloadFileAction = $('<a>', { 'data-bind': 'click:downloadFile, downloadFileBinding: fileData, visible: (!isDirectory() && showActions())', href: 'javascript:void(0)', class: 'nodeAction', title: 'Download File' });
         downloadFileAction.append('download');
         actionsTd.append(downloadFileAction);
@@ -185,8 +239,7 @@ var Renderer = (function () {
 
         return browser;
 
-    }
-
+    };
     Renderer.prototype.svgs = function (key) {
         var svgs = {
             folder: `<svg  class="feather feather-folder" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -232,45 +285,7 @@ var Renderer = (function () {
                     </svg>`
         };
         return $(svgs[key]);
-    }
-
-    Renderer.prototype.getViews = function (viewDefinitions) {
-        var views = [];
-        var viewDefinitions = viewDefinitions || [];
-        for (var i = 0; i < viewDefinitions.length; i++) {
-            var viewDefinition = viewDefinitions[i];
-            var element = this.getView(viewDefinition.type, viewDefinition);
-            views.push(element);
-        }
-        return views;
-    }
-
-    Renderer.prototype.applyDataContexts = function (viewDefinitions) {
-        var viewDefinitions = viewDefinitions || [];
-        for (var i = 0; i < viewDefinitions.length; i++) {
-            var viewDefinition = viewDefinitions[i];
-            if (viewDefinition.hasOwnProperty('viewModel') && viewDefinition.hasOwnProperty('id')) {
-                var viewModel = this.getViewModel(viewDefinition.viewModel);
-                ko.applyBindings(viewModel, document.getElementById(viewDefinition.id));
-            }
-        }
-    }
-
-    Renderer.prototype.render = function (target, viewDefinition) {
-        var view = this.getView(viewDefinition.type, viewDefinition);
-        $(target).append(view)
-        this.applyDataContexts(viewDefinition.viewDefinitions);
-
-    }
-
-    Renderer.prototype.getViewModel = function (key) {
-        return new this.viewModels[key]();
-    }
-
-    Renderer.prototype.getView = function (key) {
-        return this[key] && this[key].apply(this, [].slice.call(arguments, 1));
     };
-
     return Renderer;
 }());
 
