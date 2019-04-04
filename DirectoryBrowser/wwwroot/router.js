@@ -17,7 +17,7 @@ var Router = (function () {
         this.pushHistory = true;
         DB.Events.subscribe('rootNodeChanged', this.navigate, this);
         window.onpopstate = function (e) {
-            console.log("location: " + document.location + ", state: " + JSON.stringify(e.state, null, 2));
+            //console.log("location: " + document.location + ", state: " + JSON.stringify(e.state, null, 2));
 
             self.pushHistory = false;
 
@@ -34,7 +34,7 @@ var Router = (function () {
         }
 
         window.history.onpushstate = function (e) {
-            console.log("location: " + document.location + ", state: " + JSON.stringify(e.state, null, 2));
+            //console.log("location: " + document.location + ", state: " + JSON.stringify(e.state, null, 2));
 
         }
 
@@ -99,7 +99,7 @@ var Router = (function () {
             //window.history.pushState(toPush, '', toPush.path);
             history.push(toPush);
         }
-        console.log(JSON.stringify(history, null, 2));
+        //console.log(JSON.stringify(history, null, 2));
         return history;
     }
 

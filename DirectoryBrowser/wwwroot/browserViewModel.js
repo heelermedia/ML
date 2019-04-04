@@ -70,6 +70,8 @@
         DB.BrowserApi.moveNodes(moveNodeModel, this.nodesRetrieved, this);
     }
 
+
+
     BrowserViewModel.prototype.dispose = function () {
         DB.Events.unsubscribe('nodeClicked', this.nodesRetrieved);
         DB.Events.unsubscribe('fileUpload', this.uploadFiles);

@@ -36,21 +36,21 @@ ko.bindingHandlers.draggable = {
             drag: function (event, ui) {
                 //track position delta 
                 //i will use this to determine over indicator position
-                dragDelta = ui.offset.left;
-                var helper = $(ui.helper);
-                //dragging right
-                if (dragDelta > startPosition) {
-                    //check threshold before swapping icon
-                    if (dragDelta <= (startPosition + 10)) {
-                        helper.find(".fa-plus").removeClass("fa-plus").addClass("fa-ban");
-                    }
-                } else {
-                    //dragging left
-                    //check threshold before swapping icon
-                    if (dragDelta >= (startPosition - 10)) {
-                        helper.find(".fa-plus").removeClass("fa-plus").addClass("fa-ban");
-                    }
-                }
+                //dragDelta = ui.offset.left;
+                //var helper = $(ui.helper);
+                ////dragging right
+                //if (dragDelta > startPosition) {
+                //    //check threshold before swapping icon
+                //    if (dragDelta <= (startPosition + 10)) {
+                //        helper.find(".fa-plus").removeClass("fa-plus").addClass("fa-ban");
+                //    }
+                //} else {
+                //    //dragging left
+                //    //check threshold before swapping icon
+                //    if (dragDelta >= (startPosition - 10)) {
+                //        helper.find(".fa-plus").removeClass("fa-plus").addClass("fa-ban");
+                //    }
+                //}
             },
             stop: function (event, ui) {
                 //$("#OverI").remove();

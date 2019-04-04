@@ -19,6 +19,11 @@
         this.showNewFolderNameInput = ko.observable(false);
         this.newDirectoryName = ko.observable();
 
+        this.showActions = ko.observable(false);
+        this.showActionsTitle = ko.pureComputed(function () {
+            return this.showActions() ? 'Hide Actions' : 'Show Actions';
+        }, this);
+
         this.showFolder = ko.pureComputed(function () {
             return !n.isFile() && !this.hasChildren();
         }, this);
@@ -36,6 +41,9 @@
 
     NodeViewModel.prototype.nodeClicked = function () {
         DB.Events.publish('nodeClicked', { ...this });
+    };
+    NodeViewModel.prototype.viewActions = function () {
+        this.showActions(!this.showActions());
     };
     NodeViewModel.prototype.createChildren = function (nodes) {
         var children = this.children();

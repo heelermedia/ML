@@ -7,6 +7,13 @@ var Renderer = (function () {
         self.viewModels = viewModels;
     }
 
+    Renderer.prototype.modalWindow = function (viewDefinition) {
+        var modalWindow = $('<div>', { id: viewDefinition.id, class: 'modalWindow' });
+        var content = this.getViews(viewDefinition.viewDefinitions);
+        modalWindow.append(content);
+        return modalWindow.draggable();
+    }
+
     Renderer.prototype.container = function (viewDefinition) {
         var container = $('<div>', { id: viewDefinition.id, class: 'container' });
         var content = this.getViews(viewDefinition.viewDefinitions);
@@ -87,7 +94,7 @@ var Renderer = (function () {
 
     Renderer.prototype.breadCrumbsView = function (viewDefinition) {
         var breadCrumbs = $('<div>', { id: viewDefinition.id, class: 'row' });
-        var column = $('<div>', { class: 'col-lg-6' });
+        var column = $('<div>', { class: 'col-lg-6 pl-0' });
         var nav = $('<nav>', {});
         var ol = $('<ol>', { 'data-bind': 'foreach: breadCrumbs', class: 'breadcrumb' });
         var li = $('<li>', { class: 'breadcrumb-item' });
@@ -106,17 +113,10 @@ var Renderer = (function () {
         var column = $('<div>', { class: 'col-lg-12' });
         browser.append(column);
 
-        var ul = $('<ul>', { 'data-bind': 'foreach:nodes', class: 'pl-3' });
-        var li = $('<li>', { 'data-bind': 'draggable:{ data: $data }', class: 'pl-3' });
-        ul.append(li);
-
-        browser.append(column.append(ul));
-
-        var row = $('<div>', { class: 'row' });
-        li.append(row);
-
-        var innerColumnA = $('<div>', { class: 'col-lg-3' });
-        row.append(innerColumnA);
+        var table = $('<table>', { id: viewDefinition.id, class: 'table table-striped table-sm' });
+        var thead = $('<thead>', {});
+        var theadRow = $('<tr>', {});
+        var theadHeader = $('<th>', {}).append('Testing');
 
         var showFolderIcon = this.svgs('folder');
         showFolderIcon.attr({ 'data-bind': 'visible: showFolder' });
@@ -131,55 +131,57 @@ var Renderer = (function () {
         var actionText = $('<span>', { 'data-bind': 'text:name' });
         nodeClickedAction.append(actionText);
 
-        innerColumnA.append(showFolderIcon).append(showFolderPlus).append(showFileIcon).append(nodeClickedAction);
+        var tbody = $('<tbody>', { 'data-bind': 'foreach:nodes' });
+        var trow = $('<tr>', { 'data-bind': 'draggable:{ data: $data }' });
 
-        row.append(innerColumnA);
+        var iconTd = $('<td>', { class: 'icon' });
+        iconTd.append(showFolderIcon).append(showFolderPlus).append(showFileIcon);
 
+        var nodeTd = $('<td>', { class: 'nodeName' });
+        nodeTd.append(nodeClickedAction);
 
-        var innerColumnB = $('<div>', { 'data-bind': 'visible: isDirectory', class: 'col-lg-9 text-right' });
+        var actionsTd = $('<td>', { class: 'actions text-right' });
+        var gearAction = $('<a>', { 'data-bind':'click:viewActions, attr: { title:showActionsTitle }', href: 'javascript:void(0)', class: 'nodeAction', title: 'Actions' });
+        var gearIcon = this.svgs('gear');
+        actionsTd.append(gearAction.append(gearIcon));
 
-        var fileUploadInput = $('<input>', { 'data-bind': 'event:{ change:filesSelected }, visible:!showNewFolderNameInput()', type: 'file', class: 'custom-file-input' });
+        trow.append(iconTd).append(nodeTd)//.append(actionsTd);
+
+        browser.append(table.append(tbody.append(trow)));
+
+        //var fileUploadInput = $('<input>', { 'data-bind': 'event:{ change:filesSelected }, visible:!showNewFolderNameInput()', type: 'file', class: 'custom-file-input' });
         //TODO: add multiple
-        innerColumnB.append(fileUploadInput);
+        //actionsTd.append(fileUploadInput);
 
-        var uploadIcon = this.svgs('upload');
-        innerColumnB.append(uploadIcon);
+        // var uploadIcon = this.svgs('upload');
+        // actionsTd.append('upload files');
 
-
-        var addDirectoryAction = $('<a>', { 'data-bind': 'click:addNewDirectory, visible:!showNewFolderNameInput()', href: 'javascript:void(0)', class: 'nodeAction', title: 'Add New Directory' });
+        var addDirectoryAction = $('<a>', { 'data-bind': 'click:addNewDirectory, visible:(!showNewFolderNameInput() && isDirectory() && showActions())', href: 'javascript:void(0)', class: 'nodeAction', title: 'Add New Directory' });
         var showFolderIcon = this.svgs('plus');
-        addDirectoryAction.append(showFolderIcon);
-        innerColumnB.append(addDirectoryAction);
+        addDirectoryAction.append('add new dir');
+        actionsTd.append(addDirectoryAction);
 
-        var newDirectoryNameInput = $('<input>', { 'data-bind': 'textInput:newDirectoryName, visible:showNewFolderNameInput', type: 'text', class: 'form-control form-control-sm col-lg-3 ml-2 float-right', placeholder: 'Name New Directory' });
-        innerColumnB.append(newDirectoryNameInput);
+        var newDirectoryNameInput = $('<input>', { 'data-bind': 'textInput:newDirectoryName, visible:(showNewFolderNameInput() && isDirectory() && showActions())', type: 'text', class: 'form-control form-control-sm col-lg-3 ml-2 float-right', placeholder: 'Name New Directory' });
+        actionsTd.append(newDirectoryNameInput);
 
-        var saveNewDirectoryAction = $('<a>', { 'data-bind': 'click:saveNewDirectory, visible:showNewFolderNameInput', href: 'javascript:void(0)', class: 'nodeAction', title: 'Save New Directory' });
-        var saveIcon = this.svgs('save');
-        saveNewDirectoryAction.append(saveIcon);
-        innerColumnB.append(saveNewDirectoryAction);
+        var saveNewDirectoryAction = $('<a>', { 'data-bind': 'click:saveNewDirectory, visible:(showNewFolderNameInput() && isDirectory() && showActions())', href: 'javascript:void(0)', class: 'nodeAction', title: 'Save New Directory' });
+        saveNewDirectoryAction.append('save');
+        actionsTd.append(saveNewDirectoryAction);
 
-        var removeNodesAction = $('<a>', { 'data-bind': 'click:removeNodes', href: 'javascript:void(0)', class: 'nodeAction', title: 'Delete Directory' });
-        var closeIcon = this.svgs('x');
-        removeNodesAction.append(closeIcon);
-        innerColumnB.append(removeNodesAction);
-
-        row.append(innerColumnB);
+        var removeNodesAction = $('<a>', { 'data-bind': 'click:removeNodes, visible: (isDirectory() && showActions())', href: 'javascript:void(0)', class: 'nodeAction', title: 'Delete Directory' });
+        removeNodesAction.append('delete');
+        actionsTd.append(removeNodesAction);
 
 
-        var innerColumnC = $('<div>', { 'data-bind': 'visible: !isDirectory()', class: 'col-lg-9 text-right' });
+        var downloadFileAction = $('<a>', { 'data-bind': 'click:downloadFile, downloadFileBinding: fileData, visible: (!isDirectory() && showActions())', href: 'javascript:void(0)', class: 'nodeAction', title: 'Download File' });
+        downloadFileAction.append('download');
+        actionsTd.append(downloadFileAction);
 
-        var downloadFileAction = $('<a>', { 'data-bind': 'click:downloadFile, downloadFileBinding: fileData', href: 'javascript:void(0)', class: 'nodeAction', title: 'Download File' });
-        var downloadIcon = this.svgs('download');
-        downloadFileAction.append(downloadIcon);
-        innerColumnC.append(downloadFileAction);
+        var removeNodesAction = $('<a>', { 'data-bind': 'click:removeNodes, visible: (!isDirectory() && showActions())', href: 'javascript:void(0)', class: 'nodeAction', title: 'Delete File' });
+        removeNodesAction.append('delete');
+        actionsTd.append(removeNodesAction);
 
-        var removeNodesAction = $('<a>', { 'data-bind': 'click:removeNodes', href: 'javascript:void(0)', class: 'nodeAction', title: 'Delete File' });
-        var removeNodesIcon = this.svgs('x');
-        removeNodesAction.append(removeNodesIcon);
-        innerColumnC.append(removeNodesAction);
-
-        row.append(innerColumnC);
+        trow.append(actionsTd);
 
         return browser;
 
@@ -225,7 +227,7 @@ var Renderer = (function () {
                         <polyline points="7 10 12 15 17 10"></polyline>
                         <line x1="12" y1="15" x2="12" y2="3"></line>
                     </svg>`,
-            gear: `<svg class="feather feather-settings sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            gear: `<svg class="feather feather-settings" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                     </svg>`
         };

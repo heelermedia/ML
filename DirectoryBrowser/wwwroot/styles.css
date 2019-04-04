@@ -2,7 +2,6 @@
     font-size: .8em;
 }
 
-
 /*header*/
 #info {
     background-color: #ffffff;
@@ -25,9 +24,9 @@
     top: 7px;
 }
 
-    #info p {
-        /*padding: .75em 1rem*/
-    }
+#info p {
+/*padding: .75em 1rem*/
+}
 /*end info*/
 
 /*browser*/
@@ -50,34 +49,29 @@
 }
 
 #browser .nodeAction {
-    text-decoration: none;
+    text-decoration: underline;
+    margin-left: 2px;
+    margin-right: 2px;
 }
 
-#browser li {
-    list-style-type: none;
+#browser .nodeAction + .nodeAction::after {
+    content: "|";
+    margin-left: 2px;
 }
 
-    #browser li:nth-child(odd) {
-        background-color: #ffffff;
-    }
+#browser .icon {
+    width: 20px;
+}
 
-    #browser li:nth-child(even) {
-        background-color: #f5f5f5;
-    }
+.table-sm td, .table-sm th {
+    padding: .1rem;
+}
 
-    #browser li a {
-        /*cursor: pointer;*/
-        position: relative;
-        top: 1px;
-        text-decoration: underline;
-    }
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0,0,0,.01);
+}
 
-        #browser li a:hover {
-            text-decoration: none;
-        }
 /*end browser*/
-
-
 
 /*bread crumbs*/
 #breadcrumbs .breadcrumb {
@@ -90,9 +84,9 @@
     text-decoration: underline;
 }
 
-    #breadcrumbs a:hover {
-        text-decoration: none;
-    }
+#breadcrumbs a:hover {
+    text-decoration: none;
+}
 
 #breadcrumbs .breadcrumb-item + .breadcrumb-item::before {
     content: "\00BB";
@@ -120,3 +114,20 @@ a {
 
 
 /*end bread crumbs*/
+
+
+/*widget window*/
+#modalWindow {
+    z-index: 705;
+    box-shadow: rgb(136, 136, 136) 0px 3px 10px -1px;
+    position: fixed;
+    z-index: 1004;
+    top: 100px;
+    left: 300px;
+    width: 900px;
+    background-color: white;
+    border: 1px solid #DFDFDF;
+    border-radius: 5px;
+}
+
+/*end widget window*/
