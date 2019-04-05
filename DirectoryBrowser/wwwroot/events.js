@@ -1,5 +1,4 @@
 ﻿var Events = (function () {
-
     function Events() {
         var self = this;
         self.events = {};

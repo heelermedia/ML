@@ -1,5 +1,4 @@
 ﻿var BrowserViewModel = (function () {
-
     function BrowserViewModel(events, browserApi) {
 
         this.nodes = ko.observableArray([]);
@@ -22,7 +21,7 @@
         }
         this.events.publish('rootNodeChanged', { ...node });
         this.nodes([]);
-        this.createNodes(node.children, this.nodes);
+        this.createNodes(node.content ? [node] : node.children, this.nodes);
     }
 
     BrowserViewModel.prototype.initialize = function (path) {
@@ -60,11 +59,9 @@
         }
         nodes.valueHasMutated();
     };
-
     BrowserViewModel.prototype.removeNode = function (node) {
         this.nodesRetrieved(node);
     }
-
     BrowserViewModel.prototype.moveNodes = function (moveNodeModel) {
         this.browserApi.moveNodes(moveNodeModel, this.nodesRetrieved, this);
     }

@@ -1,8 +1,6 @@
 ﻿var BrowserApi = (function () {
-
     function BrowserApi() {
     }
-
     BrowserApi.prototype.fetch = function (config, context) {
         var request = new XMLHttpRequest();
         request.responseType = 'json';
@@ -35,7 +33,6 @@
             default: break;
         }
     }
-
     BrowserApi.prototype.getBrowserNodes = function (path, callback, context) {
         var ajaxConfig = {
             verb: 'GET',
@@ -44,7 +41,6 @@
         };
         this.fetch(ajaxConfig, context);
     }
-
     BrowserApi.prototype.uploadFiles = function (formData, callback, context) {
         var ajaxConfig = {
             verb: 'POST',
@@ -54,7 +50,6 @@
         };
         this.fetch(ajaxConfig, context);
     }
-
     BrowserApi.prototype.moveNodes = function (moveNodesModel, callback, context) {
         var ajaxConfig = {
             verb: 'POST',
@@ -64,11 +59,9 @@
         };
         this.fetch(ajaxConfig, context);
     }
-
     BrowserApi.prototype.copyNodes = function (copyNodes, callback, context) {
 
     }
-
     BrowserApi.prototype.createDirectory = function (createDirectoryModel, callback, context) {
         var ajaxConfig = {
             verb: 'PUT',
@@ -78,11 +71,9 @@
         };
         this.fetch(ajaxConfig, context);
     }
-
     BrowserApi.prototype.createFile = function () {
 
     }
-
     BrowserApi.prototype.downloadFile = function (downloadFileModel, callback, context) {
         var ajaxConfig = {
             verb: 'GET',
@@ -92,7 +83,6 @@
         };
         this.fetch(ajaxConfig, context);
     }
-
     BrowserApi.prototype.removeNodes = function (removeNodesModel, callback, context) {
         var ajaxConfig = {
             verb: 'DELETE',
@@ -102,7 +92,6 @@
         };
         this.fetch(ajaxConfig, context);
     }
-
     BrowserApi.prototype.search = function (searchModel, callback, context) {
         var ajaxConfig = {
             verb: 'POST',
@@ -112,6 +101,5 @@
         };
         this.fetch(ajaxConfig, context);
     }
-
     return BrowserApi;
 }());

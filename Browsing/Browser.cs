@@ -232,6 +232,7 @@ namespace Browsing
                             Root = dirInfo.Root.FullName,
                             Name = dirInfo.Name,
                             IsFile = false,
+                            //Size = GetDirectorySize(dirInfo.FullName),
                             HasChildren = dirInfo.EnumerateFileSystemInfos("*", SearchOption.TopDirectoryOnly).Any()
                         });
                     }
@@ -305,6 +306,27 @@ namespace Browsing
         public Node Search(Search search)
         {
             return GetBrowserNodes(search.Path, search.SearchText);
+        }
+
+        static long GetDirectorySize(string p)
+        {
+            // 1.
+            // Get array of all file names.
+            string[] a = Directory.GetFiles(p, "*.*");
+
+            // 2.
+            // Calculate total bytes of all files in a loop.
+            long b = 0;
+            foreach (string name in a)
+            {
+                // 3.
+                // Use FileInfo to get length of each file.
+                FileInfo info = new FileInfo(name);
+                b += info.Length;
+            }
+            // 4.
+            // Return total size
+            return b;
         }
     }
 }

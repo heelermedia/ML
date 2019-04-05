@@ -12,7 +12,6 @@
             if (self.history.length > 0) {
                 self.history.pop();
                 previousState = self.history[self.history.length - 1];
-                console.log(JSON.stringify(previousState, null, 2));
             }
             self.events.publish('routeChanged', previousState.serverPath || previousState.path);
         }
@@ -73,9 +72,6 @@
             history.push(toPush);
         }
         return history;
-    }
-    Router.prototype.previousStateMatches = function (pathA, pathB) {
-        return pathA === pathB;
     }
     return Router;
 }());

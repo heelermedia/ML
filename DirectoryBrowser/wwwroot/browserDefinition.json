@@ -1,11 +1,13 @@
 ﻿{
   "type": "container",
   "id": "container",
-  "contentTemplates": [
+  "isModal": false,
+  "useContainerCssClass": true,
+  "viewDefinitions": [
     {
-      "type": "infoView",
-      "viewModel": "InfoViewModel",
-      "id": "info"
+      "type": "headerView",
+      "viewModel": "HeaderViewModel",
+      "id": "header"
     },
     {
       "type": "searchView",
@@ -13,14 +15,25 @@
       "id": "searchView"
     },
     {
-      "type": "breadcrumbs",
-      "viewModel": "BreadCrumbsViewModel",
-      "id": "breadcrumbs"
+      "type": "container",
+      "useContainerCssClass": false,
+      "viewDefinitions": [
+        {
+          "type": "breadCrumbsView",
+          "viewModel": "BreadCrumbsViewModel",
+          "id": "breadcrumbs"
+        },
+        {
+          "type": "infoView",
+          "viewModel": "InfoViewModel",
+          "id": "infoView"
+        }
+      ]
     },
     {
       "type": "browserView",
       "viewModel": "BrowserViewModel",
-      "id": "info"
+      "id": "browser"
     }
   ]
 }

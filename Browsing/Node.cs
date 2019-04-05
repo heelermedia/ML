@@ -60,6 +60,11 @@ namespace Browsing
         /// 
         /// </summary>
         [JsonProperty(Order = 10)]
+        public long Size { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [JsonProperty(Order = 11)]
         public List<Node> Children;
 
         public Node()

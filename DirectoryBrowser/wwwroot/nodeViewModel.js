@@ -14,6 +14,7 @@
         this.lines = ko.observableArray([]);
         this.isFile = ko.observable(data.isFile);
         this.hasChildren = ko.observable(data.hasChildren);
+        this.size = ko.observable(`(${data.size}) bytes`);
         this.content = ko.observable(data.content ? data.content : null);
         if (this.content()) {
             this.lines(this.toFileLines(this.content()));
@@ -44,10 +45,10 @@
     }
     NodeViewModel.prototype.nodeClicked = function () {
         this.events.publish('nodeClicked', { ...this });
-    };
+    }
     NodeViewModel.prototype.viewActions = function () {
         this.showActions(!this.showActions());
-    };
+    }
     NodeViewModel.prototype.createChildren = function (nodes) {
         var children = this.children();
         var l = nodes.length;
@@ -56,7 +57,7 @@
             children.push(new DB.ViewModels.NodeViewModel(nodes[i]));
         }
         this.children.valueHasMutated();
-    };
+    }
     NodeViewModel.prototype.filesSelected = function (vm, e) {
         var files = e.target.files;
         var formData = new FormData();
@@ -74,16 +75,16 @@
     }
     NodeViewModel.prototype.downloadFile = function () {
         this.browserApi.downloadFile({ path: this.path, isFileDownload: true }, this.fileDataRetrieved, this);
-    };
+    }
     NodeViewModel.prototype.fileDataRetrieved = function (fileData) {
         this.fileData(fileData);
-    };
+    }
     NodeViewModel.prototype.removeNodes = function (node) {
         this.events.publish('removeNodes', { NodesToRemove: [node] });
-    };
+    }
     NodeViewModel.prototype.toFileLines = function (fileContent) {
         return fileContent.split('\n');
-    };
+    }
     NodeViewModel.prototype.toDto = function (keys) {
         var nodeDto = {};
         for (var i = 0; i <= keys.length - 1; i++) {
@@ -91,9 +92,9 @@
             nodeDto[key] = ko.utils.unwrapObservable(this[key]);
         }
         return nodeDto;
-    };
+    }
     NodeViewModel.prototype.dispose = function () {
 
-    };
+    }
     return NodeViewModel;
 }());
