@@ -93,7 +93,7 @@ namespace DirectoryBrowser.Controllers
 
         [Route("CreateFile")]
         [HttpPut]
-        public ActionResult<Node> CreateDirectory([FromBody] CreateFile createFile)
+        public ActionResult<Node> CreateFile([FromBody] CreateFile createFile)
         {
             Node node = _browser.CreateFile(createFile);
             return Ok(node);

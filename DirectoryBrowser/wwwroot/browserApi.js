@@ -71,8 +71,14 @@
         };
         this.fetch(ajaxConfig, context);
     }
-    BrowserApi.prototype.createFile = function () {
-
+    BrowserApi.prototype.createFile = function (createFileModel, callback, context) {
+        var ajaxConfig = {
+            verb: 'PUT',
+            url: `http://localhost:63674/api/browsing/createFile`,
+            callback: callback,
+            data: createFileModel
+        };
+        this.fetch(ajaxConfig, context);
     }
     BrowserApi.prototype.downloadFile = function (downloadFileModel, callback, context) {
         var ajaxConfig = {

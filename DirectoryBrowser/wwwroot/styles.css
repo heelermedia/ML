@@ -9,12 +9,10 @@ a {
 #header {
     background-color: #ffffff;
 }
-
 #header .feather {
     width: 25px;
     height: 25px;
 }
-
 #header .list-inline-item .head {
     position: relative;
     top: 5px;
@@ -22,9 +20,9 @@ a {
 /*end header*/
 
 /*info*/
-
-#info p {
-/*padding: .75em 1rem*/
+#infoView .feather {
+    width: 15px;
+    height: 15px;
 }
 /*end info*/
 
@@ -36,32 +34,31 @@ a {
     width: 30px;
     /*cursor:pointer;*/
 }
-
+#browser pre {
+    color: blue;
+    font-size: .8em;
+    max-width: 1000px;
+}
+#browser .bytesSize {
+    font-size: .8em;
+    color: #c8c8c8;
+}
 #browser .feather-upload {
     /*cursor:pointer;
     z-index:10;*/
 }
-
 #browser .feather {
     width: 15px;
     height: 15px;
 }
-
 #browser .nodeAction {
     text-decoration: underline;
     margin-left: 5px;
     margin-right: 5px;
 }
-
-/*#browser .nodeAction + .nodeAction::after  {
-    content: "|";
-    margin-left: 2px;
-}*/
-
 #browser .icon {
     width: 20px;
 }
-
 #browser .fileInput{
     font-size:.8em;
     width: 90px;
@@ -72,57 +69,43 @@ a {
 .table-sm td, .table-sm th {
     padding: .1rem;
 }
-
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: rgba(0,0,0,.01);
 }
-
 /*end browser*/
 
+/*search view*/
+#searchView .feather {
+    width: 17px;
+    height: 17px;
+    position:relative;
+    top:-2px;
+}
+#searchView .fileInput {
+    font-size: .8em;
+    position:relative;
+    top:5px;
+}
+
+/*end search view*/
 /*bread crumbs*/
 #breadcrumbs .breadcrumb {
     background-color: #ffffff;
     margin-bottom: 0px;
     padding: 0em 0rem;
 }
-
 #breadcrumbs a {
     text-decoration: underline;
 }
-
 #breadcrumbs a:hover {
     text-decoration: none;
 }
-
 #breadcrumbs .breadcrumb-item + .breadcrumb-item::before {
     content: "\00BB";
 }
-
-/*.breadcrumb-item {
-    a .disabled
-
-{
-    pointer-events: none;
-    cursor: not-allowed;
-    cursor: not-allowed;
-    color: #5e5e5e;
-    text-decoration: none;
-}
-
-a {
-    cursor: pointer;
-    color: #4285f4;
-    text-decoration: underline;
-}
-
-}*/
-
-
-
 /*end bread crumbs*/
 
-
-/*widget window*/
+/*modal window*/
 #modalWindow {
     z-index: 705;
     box-shadow: rgb(136, 136, 136) 0px 3px 10px -1px;
@@ -130,7 +113,7 @@ a {
     z-index: 1004;
     top: 100px;
     left: 475px;
-    width: 1000px;
+    max-width: 1000px;
     background-color: white;
     border: 1px solid #DFDFDF;
     border-radius: 5px;
@@ -138,5 +121,4 @@ a {
     padding-left: 1.5em;
     padding-right: 1.5em;
 }
-
-/*end widget window*/
+/*end modal window*/

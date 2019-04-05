@@ -12,5 +12,8 @@
         this.directoryCount(node.directoryCount);
         this.fileCount(node.fileCount);
     }
+    InfoViewModel.prototype.dispose = function () {
+        this.events.unsubscribe('rootNodeChanged', this.nodeInfoChanged);
+    }
     return InfoViewModel;
 }());

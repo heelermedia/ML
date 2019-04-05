@@ -77,11 +77,23 @@ namespace Browsing
         {
             foreach (Node node in removeNodes.NodesToRemove)
             {
-                DirectoryInfo directoryInfo = new DirectoryInfo(node.Parent);
-                if (directoryInfo.Exists)
+                if (node.IsFile)
                 {
-                    directoryInfo.Delete(true);
+                    FileInfo fileInfo = new FileInfo(node.Path);
+                    if (fileInfo.Exists)
+                    {
+                        fileInfo.Delete();
+                    }
                 }
+                else
+                {
+                    DirectoryInfo directoryInfo = new DirectoryInfo(node.Path);
+                    if (directoryInfo.Exists)
+                    {
+                        directoryInfo.Delete(true);
+                    }
+                }
+
             }
         }
         /// <summary>
@@ -185,6 +197,7 @@ namespace Browsing
                     Root = directoryInfo.Root.FullName,
                     Name = directoryInfo.Name,
                     IsFile = false,
+                    Size = GetBytesSize(directoryInfo.FullName, false),
                     HasChildren = directoryInfo.EnumerateFileSystemInfos("*", SearchOption.TopDirectoryOnly).Any()
                 };
             }
@@ -203,6 +216,7 @@ namespace Browsing
                     Root = directoryInfo.Root.FullName,
                     Name = directoryInfo.Name,
                     IsFile = true,
+                    Size = GetBytesSize(directoryInfo.FullName, true),
                     HasChildren = false,
                     Content = Encoding.UTF8.GetString(ms.GetBuffer())
                 };
@@ -232,7 +246,7 @@ namespace Browsing
                             Root = dirInfo.Root.FullName,
                             Name = dirInfo.Name,
                             IsFile = false,
-                            //Size = GetDirectorySize(dirInfo.FullName),
+                            Size = GetBytesSize(dirInfo.FullName, false),
                             HasChildren = dirInfo.EnumerateFileSystemInfos("*", SearchOption.TopDirectoryOnly).Any()
                         });
                     }
@@ -266,6 +280,7 @@ namespace Browsing
                             Parent = fileInfo.Directory.FullName,
                             Root = fileInfo.Directory.Root.FullName,
                             Name = fileInfo.Name,
+                            Size = GetBytesSize(fileInfo.FullName, true),
                             IsFile = true
                         });
                     }
@@ -307,26 +322,28 @@ namespace Browsing
         {
             return GetBrowserNodes(search.Path, search.SearchText);
         }
-
-        static long GetDirectorySize(string p)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private long GetBytesSize(string path, bool isFile)
         {
-            // 1.
-            // Get array of all file names.
-            string[] a = Directory.GetFiles(p, "*.*");
-
-            // 2.
-            // Calculate total bytes of all files in a loop.
-            long b = 0;
-            foreach (string name in a)
+            long size = 0;
+            if (isFile)
             {
-                // 3.
-                // Use FileInfo to get length of each file.
-                FileInfo info = new FileInfo(name);
-                b += info.Length;
+                size = new FileInfo(path).Length;
             }
-            // 4.
-            // Return total size
-            return b;
+            else
+            {
+                IEnumerable<string> files = Directory.EnumerateFiles(path, "*.*", SearchOption.TopDirectoryOnly);
+                foreach (string name in files)
+                {
+                    FileInfo info = new FileInfo(name);
+                    size += info.Length;
+                }
+            }
+            return size;
         }
     }
 }

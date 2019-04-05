@@ -31,7 +31,11 @@
         if (this.exists(eventName)) {
             var eventObj = this.events[eventName];
             eventObj.subscribers = eventObj.subscribers.filter(function (subscriberObj) {
-                subscriberObj = null;
+                if (subscriberObj.callBack !== callBack) {
+                    return subscriberObj;
+                } else {
+                    subscriberObj = null;
+                }
             });
         }
     }

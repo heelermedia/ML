@@ -14,7 +14,7 @@
         this.lines = ko.observableArray([]);
         this.isFile = ko.observable(data.isFile);
         this.hasChildren = ko.observable(data.hasChildren);
-        this.size = ko.observable(`(${data.size}) bytes`);
+        this.sizeDisplay = ko.observable(`(${data.size}) bytes`);
         this.content = ko.observable(data.content ? data.content : null);
         if (this.content()) {
             this.lines(this.toFileLines(this.content()));
@@ -80,7 +80,8 @@
         this.fileData(fileData);
     }
     NodeViewModel.prototype.removeNodes = function (node) {
-        this.events.publish('removeNodes', { NodesToRemove: [node] });
+        var toRemove = node.toDto(node.keys);
+        this.events.publish('removeNodes', { NodesToRemove: [toRemove] });
     }
     NodeViewModel.prototype.toFileLines = function (fileContent) {
         return fileContent.split('\n');

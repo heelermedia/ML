@@ -41,7 +41,7 @@
         if (window.location.pathname !== '/') {
             path = window.location.pathname;
         } else {
-            path = 'C:\\Projects\\knockout-asp-net-core';
+            path = 'C:\\TestingFolder';
         }
         this.history = this.getHistoryStack(path);
         this.events.publish('routeChanged', path);

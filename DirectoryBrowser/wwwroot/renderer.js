@@ -1,5 +1,4 @@
 ﻿var Renderer = (function () {
-
     function Renderer(directoryBrowser) {
         this.directoryBrowser = directoryBrowser;
         this.activeViewModels = [];
@@ -14,7 +13,6 @@
 
     };
     Renderer.prototype.tearOutBrowser = function () {
-        //this.directoryBrowser.Events.unsubscribeAll(['tearOutBrowser']);
         this.tearDown(this.activeViewModels);
         ko.cleanNode(document.body);
         $('body').empty()
@@ -130,26 +128,50 @@
         var spanC = $('<span>', { 'data-bind': 'text: fileCount', class: 'font-weight-bold text-primary ml-2' });
         innerColumnC.append(pC.append(spanC));
 
-        innerRow.append(innerColumnA).append(innerColumnB).append(innerColumnC);
+        //var innerColumnD = $('<div>', { class: 'col-lg-2 text-right' });
+        //var addNewFolderAction = $('<a>', { class: 'nodeAction', title: 'Add New Folder', href: 'javascript:void(0)' });
+        //var plusIcon = this.svgs('plus');
+        //addNewFolderAction.append(plusIcon);
+        //innerColumnD.append(addNewFolderAction);
+
+        innerRow.append(innerColumnA).append(innerColumnB).append(innerColumnC);//.append(innerColumnD);
 
         infoView.append(column.append(innerRow));
 
         return infoView;
     };
     Renderer.prototype.searchView = function (viewDefinition) {
+
         var searchView = $('<div>', { id: viewDefinition.id, class: 'row' });
-        var leftColumn = $('<div>', { class: 'col-lg-4 pl-0 pr-0' });
-        var searchTextFormGroup = $('<div>', { class: 'form-group mb-2' });
-        var searchTextLabel = $('<label>', { class: 'sr-only', for: 'searchText' });
+
+        var searchColumn = $('<div>', { class: 'col-lg-3 pl-0' });
+        var searchInputGroup = $('<div>', { class: 'input-group mb-3' });
         var searchInput = $('<input>', { 'data-bind': 'textInput:searchText', type: 'text', class: 'form-control form-control-sm', id: 'searchText', placeholder: 'Search' });
-        searchTextFormGroup.append(searchTextLabel).append(searchInput);
-        leftColumn.append(searchTextFormGroup);
-        var rightColumn = $('<div>', { class: 'col-lg-8 pl-1 pr-0' });
-        var searchAction = $('<a>', { 'data-bind': 'click:search', href: 'javascript:void(0)', class: 'mb-2', title: 'Search' });
-        searchAction.append('search')
-        rightColumn.append(searchAction);
-        searchView.append(leftColumn);
-        searchView.append(rightColumn);
+        var searchInputGroupAppend = $('<div>', { class: 'input-group-append' });
+        var searchIcon = this.svgs('search');
+        var searchButton = $('<button>', { 'data-bind': 'click:search', class: 'btn btn-sm btn-primary', title: 'Search' });
+        searchInputGroup.append(searchInput).append(searchInputGroupAppend.append(searchButton.append(searchIcon)));
+        searchColumn.append(searchInputGroup);
+
+        var newFolderColumn = $('<div>', { class: 'col-lg-3' });
+        var newFolderInputGroup = $('<div>', { class: 'input-group mb-3' });
+        var newFolderInput = $('<input>', { 'data-bind': 'textInput:newDirectoryName', type: 'text', class: 'form-control form-control-sm', id: 'searchText', placeholder: 'Create New Directory' });
+        var newFolderInputGroupAppend = $('<div>', { class: 'input-group-append' });
+        var newFolderIcon = this.svgs('plus');
+        var newFolderButton = $('<button>', { 'data-bind': 'click:createNewDirectory', class: 'btn btn-sm btn-primary', title: 'Create New Directory' });
+        newFolderInputGroup.append(newFolderInput).append(newFolderInputGroupAppend.append(newFolderButton.append(newFolderIcon)));
+        newFolderColumn.append(newFolderInputGroup);
+
+        var addFilesColumn = $('<div>', { class: 'col-lg-3' });
+
+        var fileUploadInput = $('<input>', { 'data-bind': 'event:{ change:filesSelected }', type: 'file', class: 'fileInput' });
+        fileUploadInput.attr('multiple', '');
+        addFilesColumn.append(fileUploadInput);
+
+        searchView.append(searchColumn);
+        searchView.append(newFolderColumn);
+        searchView.append(addFilesColumn);
+
         return searchView;
     };
     Renderer.prototype.breadCrumbsView = function (viewDefinition) {
@@ -167,14 +189,10 @@
     Renderer.prototype.browserView = function (viewDefinition) {
 
         var browser = $('<div>', { id: viewDefinition.id, class: 'row' });
-        var column = $('<div>', { class: 'col-lg-12' });
+        var column = $('<div>', { class: 'col-lg-12 pl-0' });
         browser.append(column);
 
         var table = $('<table>', { id: viewDefinition.id, class: 'table table-striped table-sm' });
-
-        var thead = $('<thead>', {});
-        var theadRow = $('<tr>', {});
-        var theadHeader = $('<th>', {});
 
         var showFolderIcon = this.svgs('folder');
         showFolderIcon.attr({ 'data-bind': 'visible: showFolder' });
@@ -189,30 +207,28 @@
         var actionText = $('<span>', { 'data-bind': 'text:name' });
         nodeClickedAction.append(actionText);
 
-        var sizeSpan = $('<span>', { 'data-bind': 'text:size' });
+        var sizeSpan = $('<span>', { 'data-bind': 'text:sizeDisplay', class: 'bytesSize' });
 
         var tbody = $('<tbody>', { 'data-bind': 'foreach:nodes' });
         var trow = $('<tr>', { 'data-bind': 'draggable:{ data: $data }' });
-
-
 
         var iconTd = $('<td>', { class: 'icon' });
         iconTd.append(showFolderIcon).append(showFolderPlus).append(showFileIcon);
 
         var nodeTd = $('<td>', { class: 'nodeName' });
         nodeTd.append(nodeClickedAction);
-        //nodeTd.append(sizeSpan);
+        nodeTd.append(sizeSpan);
 
         var actionsTd = $('<td>', { class: 'actions text-right' });
         var gearAction = $('<a>', { 'data-bind': 'click:viewActions, attr: { title:showActionsTitle }', href: 'javascript:void(0)', class: 'nodeAction', title: 'Actions' });
         var gearIcon = this.svgs('gear');
         actionsTd.append(gearAction.append(gearIcon));
 
-        trow.append(iconTd).append(nodeTd);//.append(actionsTd);
+        trow.append(iconTd).append(nodeTd);
 
         browser.append(column.append(table.append(tbody.append(trow))));
 
-        var linesContainerTd = $('<td>', { 'data-bind': 'visible:content', colspan:'3' });
+        var linesContainerTd = $('<td>', { 'data-bind': 'visible:content', colspan: '3' });
         var linesTable = $('<table>', { class: 'table table-striped table-sm' });
         var linesTbody = $('<tbody>', { 'data-bind': 'foreach:lines' });
         var linesTrow = $('<tr>', {});
@@ -296,7 +312,8 @@
                     </svg>`,
             gear: `<svg class="feather feather-settings" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                    </svg>`
+                    </svg>`,
+            search: `<svg class="feather feather-search" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="1051"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`
         };
         return $(svgs[key]);
     };

@@ -13,7 +13,6 @@
         this.events.subscribe('removeNodes', this.removeNodes, this);
         this.events.subscribe('searchResultsRetrieved', this.searchResultsRetrieved, this);
     }
-
     BrowserViewModel.prototype.nodesRetrieved = function (node) {
         var existingNode = this.nodes();
         if (existingNode && existingNode.dispose) {
@@ -23,29 +22,23 @@
         this.nodes([]);
         this.createNodes(node.content ? [node] : node.children, this.nodes);
     }
-
     BrowserViewModel.prototype.initialize = function (path) {
-        var p = path ? path : "C:\\Projects\\knockout-asp-net-core";
+        var p = path ? path : "C:\\TestingFolder";
         this.browserApi.getBrowserNodes(p, this.nodesRetrieved, this);
     }
-
     BrowserViewModel.prototype.nodeClicked = function (node) {
         this.browserApi.getBrowserNodes(node.path, this.nodesRetrieved, this);
     }
-
     BrowserViewModel.prototype.uploadFiles = function (formData) {
         this.browserApi.uploadFiles(formData, this.nodesRetrieved, this);
     }
-
     BrowserViewModel.prototype.createDirectory = function (createDirectoryModel) {
         this.browserApi.createDirectory(createDirectoryModel, this.nodesRetrieved, this);
     }
-
     BrowserViewModel.prototype.removeNodes = function (removeNodesModel) {
         this.removeNode(removeNodesModel.NodesToRemove[0], this.nodes)
-        this.browserApi.removeNodes(removeNodesModel, null, this);
+        this.browserApi.removeNodes(removeNodesModel, this.removeNodeComplete, this);
     }
-
     BrowserViewModel.prototype.searchResultsRetrieved = function (node) {
         this.nodes([]);
         this.createNodes(node.children, this.nodes);
@@ -59,9 +52,14 @@
         }
         nodes.valueHasMutated();
     };
-    BrowserViewModel.prototype.removeNode = function (node) {
-        this.nodesRetrieved(node);
+    BrowserViewModel.prototype.removeNode = function (node, nodes) {
+        var nodesArray = nodes();
+        nodesArray = nodesArray.filter(function (n) {
+            if (n.name !== node.name) return n;
+        });
+        nodes(nodesArray);
     }
+    BrowserViewModel.prototype.removeNodeComplete = function () { }
     BrowserViewModel.prototype.moveNodes = function (moveNodeModel) {
         this.browserApi.moveNodes(moveNodeModel, this.nodesRetrieved, this);
     }
@@ -74,6 +72,5 @@
         this.events.unsubscribe('removeNodes', this.removeNodes);
         this.events.unsubscribe('searchResultsRetrieved', this.searchResultsRetrieved);
     }
-
     return BrowserViewModel;
 }());
