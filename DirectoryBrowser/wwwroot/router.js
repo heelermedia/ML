@@ -4,6 +4,7 @@
         this.events = events;
         this.history = [];
         this.currentPath = window.location.pathname;
+        this.queryParams = window.location.search;
         this.pushHistory = true;
         this.events.subscribe('rootNodeChanged', this.navigate, this);
         window.onpopstate = function (e) {
@@ -15,11 +16,12 @@
             }
             self.events.publish('routeChanged', previousState.serverPath || previousState.path);
         }
-        this.initialize();
+        this.initialize(this.currentPath, this.queryParams);
     };
     Router.prototype.navigate = function (node) {
         if (this.pushHistory) {
             var activePath = this.getNodePath(node.path);
+            if (node.isFile) activePath = this.toQueryParams(activePath, node.name);
             var toPush = { nodeName: node.name, path: node.path };
             window.history.pushState(toPush, '', `${activePath}`);
             this.history.push(toPush);
@@ -27,6 +29,12 @@
             this.pushHistory = true;
         }
         this.events.publish('breadCrumbsChanged', this.getHistoryStack(node.path));
+    }
+    Router.prototype.toQueryParams = function (path, nodeName) {
+        var splits = path.split('/');
+        splits.pop();
+        var toReturn = splits.join('/') + '?file=' + nodeName;
+        return toReturn;
     }
     Router.prototype.getCurrentPath = function () {
         return window.location.pathname;
@@ -36,17 +44,19 @@
         splits.splice(0, 1);
         return splits.join('/');
     }
-    Router.prototype.initialize = function () {
+    Router.prototype.initialize = function (path, queryParams) {
         var path;
-        if (window.location.pathname !== '/') {
+        if (path !== '/') {
             path = window.location.pathname;
         } else {
-            path = 'C:\\TestingFolder';
+            path = 'C:\\';
         }
         this.history = this.getHistoryStack(path);
+        if (queryParams) path = path + '/' + queryParams.split('=')[1];
         this.events.publish('routeChanged', path);
         this.events.publish('breadCrumbsChanged', this.getHistoryStack(path));
     }
+ 
     Router.prototype.getHistoryStack = function (path) {
         var history = [];
         var splits;

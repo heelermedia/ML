@@ -7,6 +7,7 @@
         this.searchText = ko.observable();
         this.newDirectoryName = ko.observable();
         this.selectedRootNode = ko.observable();
+        this.fileInputValue = ko.observable();
         this.events.subscribe('rootNodeChanged', this.nodeInfoChanged, this);
     }
     SearchViewModel.prototype.nodeInfoChanged = function (node) {
@@ -21,6 +22,7 @@
     }
     SearchViewModel.prototype.createNewDirectory = function () {
         this.events.publish('createDirectory', { path: this.selectedRootNode().path, name: this.newDirectoryName() });
+        this.newDirectoryName('');
     }
     SearchViewModel.prototype.filesSelected = function (vm, e) {
         var files = e.target.files;
@@ -29,6 +31,7 @@
             formData.append("files", files[i]);
         }
         this.events.publish('fileUpload', { path: this.selectedRootNode().path, files: formData, isFileUpload: true });
+        this.fileInputValue(null);
     }
     SearchViewModel.prototype.dispose = function () {
         this.events.unsubscribe('rootNodeChanged', this.nodeInfoChanged);

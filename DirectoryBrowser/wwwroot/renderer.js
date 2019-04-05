@@ -8,7 +8,7 @@
     Renderer.prototype.render = function (target, viewDefinition) {
         this.viewDefinition = viewDefinition;
         var view = this.getView(viewDefinition.type, viewDefinition);
-        $(target || 'body').append(view).fadeIn('slow')
+        $(target || 'body').append(view);
         this.applyDataContexts(viewDefinition.viewDefinitions);
 
     };
@@ -128,13 +128,7 @@
         var spanC = $('<span>', { 'data-bind': 'text: fileCount', class: 'font-weight-bold text-primary ml-2' });
         innerColumnC.append(pC.append(spanC));
 
-        //var innerColumnD = $('<div>', { class: 'col-lg-2 text-right' });
-        //var addNewFolderAction = $('<a>', { class: 'nodeAction', title: 'Add New Folder', href: 'javascript:void(0)' });
-        //var plusIcon = this.svgs('plus');
-        //addNewFolderAction.append(plusIcon);
-        //innerColumnD.append(addNewFolderAction);
-
-        innerRow.append(innerColumnA).append(innerColumnB).append(innerColumnC);//.append(innerColumnD);
+        innerRow.append(innerColumnA).append(innerColumnB).append(innerColumnC);
 
         infoView.append(column.append(innerRow));
 
@@ -164,7 +158,7 @@
 
         var addFilesColumn = $('<div>', { class: 'col-lg-3' });
 
-        var fileUploadInput = $('<input>', { 'data-bind': 'event:{ change:filesSelected }', type: 'file', class: 'fileInput' });
+        var fileUploadInput = $('<input>', { 'data-bind': 'value:fileInputValue, event:{ change:filesSelected }', type: 'file', class: 'fileInput' });
         fileUploadInput.attr('multiple', '');
         addFilesColumn.append(fileUploadInput);
 
