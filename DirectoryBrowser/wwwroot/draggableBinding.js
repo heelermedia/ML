@@ -14,38 +14,11 @@ ko.bindingHandlers.draggable = {
                 return el.clone();
             },
             start: function (event, ui) {
-                //track start position
-                //startPosition = ui.offset.left;
-                //index of table header in row 0 => n
-                //startIndex = $(this).index();
-
-
                 nodeToMove = ko.contextFor(event.target).$data;
-
             },
             drag: function (event, ui) {
-                //track position delta 
-                //i will use this to determine over indicator position
-                //dragDelta = ui.offset.left;
-                //var helper = $(ui.helper);
-                ////dragging right
-                //if (dragDelta > startPosition) {
-                //    //check threshold before swapping icon
-                //    if (dragDelta <= (startPosition + 10)) {
-                //        helper.find(".fa-plus").removeClass("fa-plus").addClass("fa-ban");
-                //    }
-                //} else {
-                //    //dragging left
-                //    //check threshold before swapping icon
-                //    if (dragDelta >= (startPosition - 10)) {
-                //        helper.find(".fa-plus").removeClass("fa-plus").addClass("fa-ban");
-                //    }
-                //}
             },
             stop: function (event, ui) {
-                //$("#OverI").remove();
-                //startPosition = -1;
-                //dragDelta = -1;
             }
         });
 
