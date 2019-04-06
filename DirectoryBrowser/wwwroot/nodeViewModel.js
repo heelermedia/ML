@@ -14,7 +14,7 @@
         this.lines = ko.observableArray([]);
         this.isFile = ko.observable(data.isFile);
         this.hasChildren = ko.observable(data.hasChildren);
-        this.sizeDisplay = ko.observable(`(${data.size}) bytes`);
+        this.sizeDisplay = ko.observable('(' + data.size + ') bytes');
         this.content = ko.observable(data.content ? data.content : null);
         if (this.content()) {
             this.lines(this.toFileLines(this.content()));
@@ -44,7 +44,7 @@
         }
     }
     NodeViewModel.prototype.nodeClicked = function () {
-        this.events.publish('nodeClicked', { ...this });
+        this.events.publish('nodeClicked', this);
     }
     NodeViewModel.prototype.viewActions = function () {
         this.showActions(!this.showActions());
@@ -72,6 +72,9 @@
     NodeViewModel.prototype.saveNewDirectory = function (node) {
         this.showNewFolderNameInput(false);
         this.events.publish('createDirectory', { path: this.path, name: this.newDirectoryName() });
+    }
+    NodeViewModel.prototype.cancelNewDirectory = function (node) {
+        this.showNewFolderNameInput(false);
     }
     NodeViewModel.prototype.downloadFile = function () {
         this.browserApi.downloadFile({ path: this.path, isFileDownload: true }, this.fileDataRetrieved, this);

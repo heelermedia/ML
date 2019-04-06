@@ -6,7 +6,7 @@
     Events.prototype.exists = function (eventName) {
         return this.events.hasOwnProperty(eventName);
     }
-    Events.prototype.register = function (eventName, context) {
+    Events.prototype.register = function (eventName) {
         if (!this.exists(eventName)) {
             this.events[eventName] = {};
             this.events[eventName].subscribers = [];
@@ -23,7 +23,7 @@
         }
     }
     Events.prototype.subscribe = function (eventName, callBack, context) {
-        this.register(eventName, context);
+        this.register(eventName);
         var eventObj = this.events[eventName];
         eventObj.subscribers.push({ callBack: callBack, context: context, key: context.constructor.name, eventName: eventName });
     }
@@ -37,15 +37,6 @@
                     subscriberObj = null;
                 }
             });
-        }
-    }
-    Events.prototype.unsubscribeAll = function (ignoreKeys) {
-        var keys = Object.keys(this.events);
-        var toUnsubscribe = keys.filter(function (k) {
-            return ignoreKeys.indexOf(k) > -1 === false;
-        });
-        for (var i = 0; i < toUnsubscribe.length; i++) {
-            toUnsubscribe[i] = null;
         }
     }
     return Events;

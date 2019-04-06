@@ -6,9 +6,8 @@
         this.breadCrumbs = ko.observableArray([]);
         this.events.subscribe('breadCrumbsChanged', this.breadCrumbsChanged, this);
         this.navigate = function (breadCrumb) {
-            var crumb = { ...breadCrumb };
-            crumb.path = crumb.serverPath;
-            self.events.publish('nodeClicked', crumb);
+            breadCrumb.path = breadCrumb.serverPath;
+            self.events.publish('nodeClicked', breadCrumb);
         };
     };
     BreadCrumbsViewModel.prototype.breadCrumbsChanged = function (historyStack) {

@@ -91,20 +91,11 @@ namespace DirectoryBrowser.Controllers
             return Ok(node);
         }
 
-        [Route("CreateFile")]
-        [HttpPut]
-        public ActionResult<Node> CreateFile([FromBody] CreateFile createFile)
-        {
-            Node node = _browser.CreateFile(createFile);
-            return Ok(node);
-        }
-
         [HttpDelete]
         public ActionResult Delete([FromBody]RemoveNodes removeNodes)
         {
             _browser.DeleteNodes(removeNodes);
             return Ok();
         }
-
     }
 }

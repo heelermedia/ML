@@ -49,12 +49,6 @@ namespace Browsing
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="createFile"></param>
-        /// <returns></returns>
-        Node CreateFile(CreateFile createFile);
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
         Node Search(Search search);

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 namespace Browsing
 {
     /// <summary>
-    /// 
+    /// Directory browsing api
     /// </summary>
     public class Browser : IBrowser
     {
@@ -19,7 +19,7 @@ namespace Browsing
         {
         }
         /// <summary>
-        /// 
+        /// Creates a Node with n children to enable drilling down into directories
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -46,7 +46,7 @@ namespace Browsing
             }
         }
         /// <summary>
-        /// 
+        /// Upload file(s)
         /// </summary>
         /// <param name="fileUpload"></param>
         /// <returns></returns>
@@ -69,7 +69,7 @@ namespace Browsing
             return GetBrowserNodes(path);
         }
         /// <summary>
-        /// 
+        /// Remove files or directories
         /// </summary>
         /// <param name="removeNodes"></param>
         /// <returns></returns>
@@ -97,7 +97,7 @@ namespace Browsing
             }
         }
         /// <summary>
-        /// 
+        /// Move files or directories
         /// </summary>
         /// <param name="moveNodes"></param>
         /// <returns></returns>
@@ -127,7 +127,7 @@ namespace Browsing
             return GetBrowserNodes(path);
         }
         /// <summary>
-        /// 
+        /// Copies a file or a directory
         /// </summary>
         /// <param name="copyNodes"></param>
         /// <returns></returns>
@@ -161,7 +161,7 @@ namespace Browsing
             return copyNodes.ToNode.IsFile ? GetBrowserNodes(path) : GetBrowserNodes(copyNodes.ToNode.Parent);
         }
         /// <summary>
-        /// 
+        /// Create a directory
         /// </summary>
         /// <param name="createDirectory"></param>
         /// <returns></returns>
@@ -175,20 +175,7 @@ namespace Browsing
             return GetBrowserNodes(path);
         }
         /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public Node CreateFile(CreateFile createFile)
-        {
-            string path = $"{createFile.Path}/{createFile.Name}";
-            if (!File.Exists(path))
-            {
-                File.Create(path);
-            }
-            return GetBrowserNodes(createFile.Path);
-        }
-        /// <summary>
-        /// 
+        /// Create the root node for browsing
         /// </summary>
         /// <param name="directoryInfo"></param>
         /// <returns></returns>
@@ -230,7 +217,7 @@ namespace Browsing
 
         }
         /// <summary>
-        /// 
+        /// Create directory nodes
         /// </summary>
         /// <param name="directoryInfo"></param>
         /// <returns></returns>
@@ -265,7 +252,7 @@ namespace Browsing
             return directoryNodes;
         }
         /// <summary>
-        /// 
+        /// Create file nodes
         /// </summary>
         /// <param name="directoryInfo"></param>
         /// <returns></returns>
@@ -299,7 +286,7 @@ namespace Browsing
             return fileNodes;
         }
         /// <summary>
-        /// 
+        /// Convert text into a search pattern
         /// </summary>
         /// <param name="searchPattern"></param>
         /// <returns></returns>
@@ -310,7 +297,7 @@ namespace Browsing
             return searchPattern;
         }
         /// <summary>
-        /// 
+        /// Get file bytes for downloading a file
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -320,7 +307,7 @@ namespace Browsing
             return bytes;
         }
         /// <summary>
-        /// 
+        /// Get nodes via search 
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
@@ -329,7 +316,7 @@ namespace Browsing
             return GetBrowserNodes(search.Path, search.SearchText);
         }
         /// <summary>
-        /// 
+        /// Get file or directory size in bytes
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -352,7 +339,7 @@ namespace Browsing
             return size;
         }
         /// <summary>
-        /// 
+        /// Copy directories 
         /// </summary>
         /// <param name="sourceDirName"></param>
         /// <param name="destDirName"></param>
@@ -360,13 +347,6 @@ namespace Browsing
         private void CopyDirectory(string sourceDirName, string destDirName, bool copySubDirs)
         {
             DirectoryInfo dir = new DirectoryInfo(sourceDirName);
-
-            if (!dir.Exists)
-            {
-                throw new DirectoryNotFoundException(
-                    "Source directory does not exist or could not be found: "
-                    + sourceDirName);
-            }
 
             DirectoryInfo[] dirs = dir.GetDirectories();
             if (!Directory.Exists(destDirName))

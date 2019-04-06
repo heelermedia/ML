@@ -1,6 +1,6 @@
 ﻿function initialize() {
-
-    var json = {
+    //drive the gui via a json definition. 
+    var viewDefinition = {
         "type": "container",
         "id": "container",
         "isModal": false,
@@ -39,7 +39,7 @@
             }
         ]
     };
-
+    //attach the directory browser app to the window
     window.DirectoryBrowser = DB = {};
 
     DB.BrowserApi = new BrowserApi();
@@ -55,7 +55,7 @@
     DB.ViewModels.BreadCrumbsViewModel = BreadCrumbsViewModel;
 
     DB.Renderer = new Renderer(DB);
-    DB.Renderer.render('body', json);
+    DB.Renderer.render('body', viewDefinition);
     DB.Router = new Router(DB.Events);
 }
 

@@ -19,7 +19,7 @@
         if (existingNode && existingNode.dispose) {
             existingNode.dispose();
         }
-        this.events.publish('rootNodeChanged', { ...node });
+        this.events.publish('rootNodeChanged', node);
         this.nodes([]);
         this.createNodes(node.content ? [node] : node.children, this.nodes);
     }

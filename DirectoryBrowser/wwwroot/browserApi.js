@@ -3,15 +3,17 @@
     }
     BrowserApi.prototype.fetch = function (config, context) {
         var request = new XMLHttpRequest();
+        request.open(config.verb, config.url, true);
         request.responseType = 'json';
         if (config.data && config.data.isFileDownload) {
             request.responseType = 'blob';
         }
-        request.open(config.verb, config.url, true);
         request.onreadystatechange = function () {
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
                 if (config.callback) {
-                    config.callback.call(context, this.response);
+                    var response = this.response;
+                    if (typeof (response) === 'string') response = JSON.parse(response); 
+                    config.callback.call(context, response);
                 }
             }
         };
@@ -32,11 +34,12 @@
                 break;
             default: break;
         }
+       
     }
     BrowserApi.prototype.getBrowserNodes = function (path, callback, context) {
         var ajaxConfig = {
             verb: 'GET',
-            url: `http://localhost:63674/api/browsing?path=${path}`,
+            url: 'http://localhost:63674/api/browsing?path=' + path,
             callback: callback
         };
         this.fetch(ajaxConfig, context);
@@ -44,7 +47,7 @@
     BrowserApi.prototype.uploadFiles = function (formData, callback, context) {
         var ajaxConfig = {
             verb: 'POST',
-            url: `http://localhost:63674/api/browsing/UploadFiles`,
+            url: 'http://localhost:63674/api/browsing/UploadFiles',
             callback: callback,
             data: formData
         };
@@ -53,7 +56,7 @@
     BrowserApi.prototype.moveNodes = function (moveNodesModel, callback, context) {
         var ajaxConfig = {
             verb: 'POST',
-            url: `http://localhost:63674/api/browsing/MoveNodes`,
+            url: 'http://localhost:63674/api/browsing/MoveNodes',
             callback: callback,
             data: moveNodesModel
         };
@@ -62,7 +65,7 @@
     BrowserApi.prototype.copyNodes = function (copyNodesModel, callback, context) {
         var ajaxConfig = {
             verb: 'POST',
-            url: `http://localhost:63674/api/browsing/CopyNodes`,
+            url: 'http://localhost:63674/api/browsing/CopyNodes',
             callback: callback,
             data: copyNodesModel
         };
@@ -71,25 +74,16 @@
     BrowserApi.prototype.createDirectory = function (createDirectoryModel, callback, context) {
         var ajaxConfig = {
             verb: 'PUT',
-            url: `http://localhost:63674/api/browsing/CreateDirectory`,
+            url: 'http://localhost:63674/api/browsing/CreateDirectory',
             callback: callback,
             data: createDirectoryModel
-        };
-        this.fetch(ajaxConfig, context);
-    }
-    BrowserApi.prototype.createFile = function (createFileModel, callback, context) {
-        var ajaxConfig = {
-            verb: 'PUT',
-            url: `http://localhost:63674/api/browsing/createFile`,
-            callback: callback,
-            data: createFileModel
         };
         this.fetch(ajaxConfig, context);
     }
     BrowserApi.prototype.downloadFile = function (downloadFileModel, callback, context) {
         var ajaxConfig = {
             verb: 'GET',
-            url: `http://localhost:63674/api/browsing/DownloadFile?path=${downloadFileModel.path}`,
+            url: 'http://localhost:63674/api/browsing/DownloadFile?path=' + downloadFileModel.path,
             callback: callback,
             data: downloadFileModel
         };
@@ -98,7 +92,7 @@
     BrowserApi.prototype.removeNodes = function (removeNodesModel, callback, context) {
         var ajaxConfig = {
             verb: 'DELETE',
-            url: `http://localhost:63674/api/browsing`,
+            url: 'http://localhost:63674/api/browsing',
             callback: callback,
             data: removeNodesModel
         };
@@ -107,7 +101,7 @@
     BrowserApi.prototype.search = function (searchModel, callback, context) {
         var ajaxConfig = {
             verb: 'POST',
-            url: `http://localhost:63674/api/browsing/Search`,
+            url: 'http://localhost:63674/api/browsing/Search',
             callback: callback,
             data: searchModel
         };

@@ -21,10 +21,12 @@
     Router.prototype.navigate = function (node) {
         if (this.pushHistory) {
             var activePath = this.getNodePath(node.path);
-            if (node.isFile) activePath = this.toQueryParams(activePath, node.name);
-            var toPush = { nodeName: node.name, path: node.path };
-            window.history.pushState(toPush, '', `${activePath}`);
-            this.history.push(toPush);
+            if (activePath) {
+                if (node.isFile) activePath = this.toQueryParams(activePath, node.name);
+                var toPush = { nodeName: node.name, path: node.path };
+                window.history.pushState(toPush, '', activePath);
+                this.history.push(toPush);
+            }
         } else {
             this.pushHistory = true;
         }
@@ -40,9 +42,12 @@
         return window.location.pathname;
     }
     Router.prototype.getNodePath = function (path) {
-        var splits = path.split("\\");
-        splits.splice(0, 1);
-        return splits.join('/');
+        if (path) {
+            var splits = path.split("\\");
+            splits.splice(0, 1);
+            return splits.join('/');
+        }
+        return null;
     }
     Router.prototype.initialize = function (path, queryParams) {
         var path;
@@ -56,30 +61,32 @@
         this.events.publish('routeChanged', path);
         this.events.publish('breadCrumbsChanged', this.getHistoryStack(path));
     }
- 
+
     Router.prototype.getHistoryStack = function (path) {
         var history = [];
-        var splits;
-        if (path.indexOf("\\") > -1) {
-            splits = path.split("\\")
-        } else {
-            splits = path.split("/")
-        }
-        splits.splice(0, 1);
-        var length = splits.length - 1;
-        var pathBuilder;
-        var serverPathBuilder;
-        for (var i = 0; i <= length; i++) {
-            var nodeName = splits[i];
-            if (pathBuilder) {
-                pathBuilder = `${pathBuilder}/${nodeName}`;
-                serverPathBuilder = `${serverPathBuilder}\\${nodeName}`;
+        if (path) {
+            var splits;
+            if (path.indexOf("\\") > -1) {
+                splits = path.split("\\")
             } else {
-                pathBuilder = nodeName;
-                serverPathBuilder = `C:\\${nodeName}`;
+                splits = path.split("/")
             }
-            var toPush = { nodeName: nodeName, path: pathBuilder, serverPath: serverPathBuilder };
-            history.push(toPush);
+            splits.splice(0, 1);
+            var length = splits.length - 1;
+            var pathBuilder;
+            var serverPathBuilder;
+            for (var i = 0; i <= length; i++) {
+                var nodeName = splits[i];
+                if (pathBuilder) {
+                    pathBuilder = pathBuilder + '/' + nodeName;
+                    serverPathBuilder = serverPathBuilder + '\\' + nodeName;
+                } else {
+                    pathBuilder = nodeName;
+                    serverPathBuilder = 'C:\\' + nodeName;
+                }
+                var toPush = { nodeName: nodeName, path: pathBuilder, serverPath: serverPathBuilder };
+                history.push(toPush);
+            }
         }
         return history;
     }
