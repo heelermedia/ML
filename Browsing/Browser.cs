@@ -42,7 +42,7 @@ namespace Browsing
             }
             catch (Exception e)
             {
-                throw;
+                throw e;
             }
         }
         /// <summary>
@@ -57,7 +57,7 @@ namespace Browsing
 
             foreach (IFormFile formFile in fileUpload.Files)
             {
-                if (formFile.Length > 0)
+                if (formFile.Length > 0 && File.Exists(path) == false)
                 {
                     using (var stream = new FileStream(Path.Combine(path, formFile.FileName), FileMode.Create))
                     {
@@ -110,7 +110,7 @@ namespace Browsing
                 if (node.IsFile)
                 {
                     FileInfo fileInfo = new FileInfo(node.Path);
-                    if (fileInfo.Exists)
+                    if (fileInfo.Exists && File.Exists(target) == false)
                     {
                         File.Move(node.Path, target);
                     }
@@ -118,7 +118,7 @@ namespace Browsing
                 else
                 {
                     DirectoryInfo directoryInfo = new DirectoryInfo(node.Path);
-                    if (directoryInfo.Exists)
+                    if (directoryInfo.Exists && Directory.Exists(target) == false)
                     {
                         Directory.Move(node.Path, target);
                     }
@@ -145,11 +145,14 @@ namespace Browsing
                 {
                     string extension = Path.GetExtension(node.Name);
                     target = $"{path}/{Path.GetFileNameWithoutExtension(node.Path)}_copy{extension}";
-                    using (FileStream source = File.Open(node.Path, FileMode.Open))
+                    if (File.Exists(target) == false)
                     {
-                        using (FileStream destination = File.Create(target))
+                        using (FileStream source = File.Open(node.Path, FileMode.Open))
                         {
-                            await source.CopyToAsync(destination);
+                            using (FileStream destination = File.Create(target))
+                            {
+                                await source.CopyToAsync(destination);
+                            }
                         }
                     }
                 }
@@ -245,6 +248,8 @@ namespace Browsing
                     }
                     catch (Exception e)
                     {
+                        //there will be an error, likely permissions, on some directory for sure so just
+                        //continue if there is one
                         continue;
                     }
                 }
@@ -279,6 +284,8 @@ namespace Browsing
                     }
                     catch (Exception e)
                     {
+                        //there will be an error, likely permissions, on some directory for sure so just
+                        //continue if there is one
                         continue;
                     }
                 }

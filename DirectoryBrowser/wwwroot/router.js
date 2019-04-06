@@ -7,6 +7,7 @@
         this.queryParams = window.location.search;
         this.pushHistory = true;
         this.events.subscribe('rootNodeChanged', this.navigate, this);
+        this.events.subscribe('removeNodes', this.nodesRemoved, this);
         window.onpopstate = function (e) {
             self.pushHistory = false;
             var previousState = null;
@@ -14,7 +15,9 @@
                 self.history.pop();
                 previousState = self.history[self.history.length - 1];
             }
-            self.events.publish('routeChanged', previousState.serverPath || previousState.path);
+            if (previousState) {
+                self.events.publish('routeChanged', previousState.serverPath || previousState.path);
+            }
         }
         this.initialize(this.currentPath, this.queryParams);
     };
@@ -49,6 +52,18 @@
         }
         return null;
     }
+    Router.prototype.nodesRemoved = function (removeNodesModel) {
+        var node = removeNodesModel.nodesToRemove[0];
+        var toReplace = this.history.find(function (h) {
+            return h.nodeName === node.name;
+        });
+        this.history = this.history.filter(function (h) {
+            return h.nodeName !== node.name;
+        });
+        this.events.publish('breadCrumbsChanged', this.getHistoryStack(node.parent));
+        var activePath = this.getNodePath(toReplace.path);
+        window.history.replaceState(toReplace, '', '');
+    }
     Router.prototype.getHistoryStack = function (path) {
         var history = [];
         if (path) {
@@ -78,10 +93,11 @@
         return history;
     }
     Router.prototype.initialize = function (path, queryParams) {
+        this.history = [];
         if (path !== '/') {
             path = window.location.pathname;
         } else {
-            path = 'C:\\';
+            path = 'C:\\Users';
         }
         this.history = this.getHistoryStack(path);
         if (queryParams) path = path + '/' + queryParams.split('=')[1];

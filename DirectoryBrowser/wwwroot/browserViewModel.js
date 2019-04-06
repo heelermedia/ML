@@ -5,6 +5,7 @@
 
         this.events = events;
         this.browserApi = browserApi;
+        this.removedNode = null;
 
         this.events.subscribe('routeChanged', this.initialize, this);
         this.events.subscribe('nodeClicked', this.nodeClicked, this);
@@ -40,7 +41,9 @@
         this.browserApi.copyNodes(copyNodesModel, this.nodesRetrieved, this);
     }
     BrowserViewModel.prototype.removeNodes = function (removeNodesModel) {
-        this.removeNode(removeNodesModel.nodesToRemove[0], this.nodes)
+        var node = removeNodesModel.nodesToRemove[0];
+        this.removedNode = node;
+        this.removeNode(node, this.nodes)
         this.browserApi.removeNodes(removeNodesModel, this.removeNodeComplete, this);
     }
     BrowserViewModel.prototype.searchResultsRetrieved = function (node) {
@@ -63,7 +66,10 @@
         });
         nodes(nodesArray);
     }
-    BrowserViewModel.prototype.removeNodeComplete = function () { }
+    BrowserViewModel.prototype.removeNodeComplete = function () {
+        this.browserApi.getBrowserNodes(this.removedNode.parent, this.nodesRetrieved, this);
+        this.removedNode = null;
+    }
     BrowserViewModel.prototype.moveNodes = function (moveNodeModel) {
         this.browserApi.moveNodes(moveNodeModel, this.nodesRetrieved, this);
     }
