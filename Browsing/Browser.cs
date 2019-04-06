@@ -134,15 +134,17 @@ namespace Browsing
         public async Task<Node> CopyNodesAsync(CopyNodes copyNodes)
         {
             string path = copyNodes.ToNode.Path;
-            if (!Directory.Exists(path))
+            if (copyNodes.ToNode.IsFile)
             {
-                Directory.CreateDirectory(path);
+                path = copyNodes.ToNode.Parent;
             }
             foreach (Node node in copyNodes.NodesToCopy)
             {
-                string target = $"{path}/{node.Name}";
+                string target = string.Empty;
                 if (node.IsFile)
                 {
+                    string extension = Path.GetExtension(node.Name);
+                    target = $"{path}/{Path.GetFileNameWithoutExtension(node.Path)}_copy{extension}";
                     using (FileStream source = File.Open(node.Path, FileMode.Open))
                     {
                         using (FileStream destination = File.Create(target))
@@ -151,8 +153,12 @@ namespace Browsing
                         }
                     }
                 }
+                else
+                {
+                    CopyDirectory(path, $"{path}_copy", true);
+                }
             }
-            return GetBrowserNodes(path);
+            return copyNodes.ToNode.IsFile ? GetBrowserNodes(path) : GetBrowserNodes(copyNodes.ToNode.Parent);
         }
         /// <summary>
         /// 
@@ -193,7 +199,7 @@ namespace Browsing
                 return new Node
                 {
                     Path = directoryInfo.FullName,
-                    Parent = directoryInfo.Parent.FullName,
+                    Parent = directoryInfo.Parent?.FullName,
                     Root = directoryInfo.Root.FullName,
                     Name = directoryInfo.Name,
                     IsFile = false,
@@ -212,7 +218,7 @@ namespace Browsing
                 return new Node
                 {
                     Path = directoryInfo.FullName,
-                    Parent = directoryInfo.Parent.FullName,
+                    Parent = directoryInfo.Parent?.FullName,
                     Root = directoryInfo.Root.FullName,
                     Name = directoryInfo.Name,
                     IsFile = true,
@@ -344,6 +350,45 @@ namespace Browsing
                 }
             }
             return size;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sourceDirName"></param>
+        /// <param name="destDirName"></param>
+        /// <param name="copySubDirs"></param>
+        private void CopyDirectory(string sourceDirName, string destDirName, bool copySubDirs)
+        {
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+
+            if (!dir.Exists)
+            {
+                throw new DirectoryNotFoundException(
+                    "Source directory does not exist or could not be found: "
+                    + sourceDirName);
+            }
+
+            DirectoryInfo[] dirs = dir.GetDirectories();
+            if (!Directory.Exists(destDirName))
+            {
+                Directory.CreateDirectory(destDirName);
+            }
+
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                string temppath = Path.Combine(destDirName, file.Name);
+                file.CopyTo(temppath, false);
+            }
+
+            if (copySubDirs)
+            {
+                foreach (DirectoryInfo subdir in dirs)
+                {
+                    string temppath = Path.Combine(destDirName, subdir.Name);
+                    CopyDirectory(subdir.FullName, temppath, copySubDirs);
+                }
+            }
         }
     }
 }

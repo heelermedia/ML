@@ -76,12 +76,16 @@
     NodeViewModel.prototype.downloadFile = function () {
         this.browserApi.downloadFile({ path: this.path, isFileDownload: true }, this.fileDataRetrieved, this);
     }
+    NodeViewModel.prototype.copy = function () {
+        var toCopy = this.toDto(this.keys);
+        this.events.publish('copyNodes', { nodesToCopy: [toCopy], toNode: toCopy });
+    }
     NodeViewModel.prototype.fileDataRetrieved = function (fileData) {
         this.fileData(fileData);
     }
     NodeViewModel.prototype.removeNodes = function (node) {
         var toRemove = node.toDto(node.keys);
-        this.events.publish('removeNodes', { NodesToRemove: [toRemove] });
+        this.events.publish('removeNodes', { nodesToRemove: [toRemove] });
     }
     NodeViewModel.prototype.toFileLines = function (fileContent) {
         return fileContent.split('\n');

@@ -1,7 +1,6 @@
 ﻿var nodeToMove = null;
 ko.bindingHandlers.draggable = {
     init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
-
         var value = ko.unwrap(valueAccessor());
         var el = $(element);
         var parentViewModel = bindingContext.$parent;
@@ -58,12 +57,6 @@ ko.bindingHandlers.draggable = {
                
             },
             drop: function (event, ui) {
-
-                `<div class="custom-control custom-switch">
-                  <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                  <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>
-                </div>`
-
                 var dropNode = ko.contextFor(event.target).$data;
                 console.log(dropNode.isDirectory());
                 if (dropNode.isDirectory()) {

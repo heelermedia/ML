@@ -12,6 +12,7 @@
         this.events.subscribe('createDirectory', this.createDirectory, this);
         this.events.subscribe('removeNodes', this.removeNodes, this);
         this.events.subscribe('searchResultsRetrieved', this.searchResultsRetrieved, this);
+        this.events.subscribe('copyNodes', this.copyNodes, this);
     }
     BrowserViewModel.prototype.nodesRetrieved = function (node) {
         var existingNode = this.nodes();
@@ -35,8 +36,11 @@
     BrowserViewModel.prototype.createDirectory = function (createDirectoryModel) {
         this.browserApi.createDirectory(createDirectoryModel, this.nodesRetrieved, this);
     }
+    BrowserViewModel.prototype.copyNodes = function (copyNodesModel) {
+        this.browserApi.copyNodes(copyNodesModel, this.nodesRetrieved, this);
+    }
     BrowserViewModel.prototype.removeNodes = function (removeNodesModel) {
-        this.removeNode(removeNodesModel.NodesToRemove[0], this.nodes)
+        this.removeNode(removeNodesModel.nodesToRemove[0], this.nodes)
         this.browserApi.removeNodes(removeNodesModel, this.removeNodeComplete, this);
     }
     BrowserViewModel.prototype.searchResultsRetrieved = function (node) {
@@ -71,6 +75,7 @@
         this.events.unsubscribe('createDirectory', this.createDirectory);
         this.events.unsubscribe('removeNodes', this.removeNodes);
         this.events.unsubscribe('searchResultsRetrieved', this.searchResultsRetrieved);
+        this.events.unsubscribe('copyNodes', this.copyNodes);
     }
     return BrowserViewModel;
 }());

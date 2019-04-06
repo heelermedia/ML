@@ -247,6 +247,10 @@
         saveNewDirectoryAction.append('save');
         actionsTd.append(saveNewDirectoryAction);
 
+        var copyAction = $('<a>', { 'data-bind': 'click:copy, visible: showActions', href: 'javascript:void(0)', class: 'nodeAction', title: 'Copy' });
+        copyAction.append('copy');
+        actionsTd.append(copyAction);
+
         var removeNodesAction = $('<a>', { 'data-bind': 'click:removeNodes, visible: (isDirectory() && showActions())', href: 'javascript:void(0)', class: 'nodeAction', title: 'Delete Directory' });
         removeNodesAction.append('delete');
         actionsTd.append(removeNodesAction);

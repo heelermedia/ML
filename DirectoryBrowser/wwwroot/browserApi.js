@@ -59,8 +59,14 @@
         };
         this.fetch(ajaxConfig, context);
     }
-    BrowserApi.prototype.copyNodes = function (copyNodes, callback, context) {
-
+    BrowserApi.prototype.copyNodes = function (copyNodesModel, callback, context) {
+        var ajaxConfig = {
+            verb: 'POST',
+            url: `http://localhost:63674/api/browsing/CopyNodes`,
+            callback: callback,
+            data: copyNodesModel
+        };
+        this.fetch(ajaxConfig, context);
     }
     BrowserApi.prototype.createDirectory = function (createDirectoryModel, callback, context) {
         var ajaxConfig = {
