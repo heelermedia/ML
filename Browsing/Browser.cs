@@ -13,7 +13,7 @@ namespace Browsing
     /// </summary>
     public class Browser : IBrowser
     {
-        const string _defaultDirectory = @"C:\\";
+        private const string _defaultDirectory = @"C:\\Users";
 
         public Browser()
         {

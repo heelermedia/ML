@@ -18,11 +18,11 @@
     }
     SearchViewModel.prototype.searchNodesComplete = function (node) {
         this.events.publish('searchResultsRetrieved', node);
-        this.searchText('');
+        this.searchText(null);
     }
     SearchViewModel.prototype.createNewDirectory = function () {
         this.events.publish('createDirectory', { path: this.selectedRootNode().path, name: this.newDirectoryName() });
-        this.newDirectoryName('');
+        this.newDirectoryName(null);
     }
     SearchViewModel.prototype.filesSelected = function (vm, e) {
         var files = e.target.files;

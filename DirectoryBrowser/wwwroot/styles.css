@@ -37,7 +37,9 @@ a {
 #browser pre {
     color: blue;
     font-size: .8em;
-    max-width: 1000px;
+    max-width: 975px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 #browser .bytesSize {
     font-size: .8em;

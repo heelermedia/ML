@@ -23,7 +23,7 @@
         }
         this.viewDefinition.isModal = !this.viewDefinition.isModal;
         this.render('body', this.viewDefinition);
-        this.directoryBrowser.Router.initialize();
+        this.directoryBrowser.Router.initialize(window.location.pathname, window.location.search);
     };
     Renderer.prototype.getViews = function (viewDefinitions) {
         var views = [];
@@ -143,7 +143,7 @@
         var searchInput = $('<input>', { 'data-bind': 'textInput:searchText', type: 'text', class: 'form-control form-control-sm', id: 'searchText', placeholder: 'Search' });
         var searchInputGroupAppend = $('<div>', { class: 'input-group-append' });
         var searchIcon = this.svgs('search');
-        var searchButton = $('<button>', { 'data-bind': 'click:search', class: 'btn btn-sm btn-primary', title: 'Search' });
+        var searchButton = $('<button>', { 'data-bind': 'click:search, enable:searchText', class: 'btn btn-sm btn-primary', title: 'Search' });
         searchInputGroup.append(searchInput).append(searchInputGroupAppend.append(searchButton.append(searchIcon)));
         searchColumn.append(searchInputGroup);
 
@@ -152,7 +152,7 @@
         var newFolderInput = $('<input>', { 'data-bind': 'textInput:newDirectoryName', type: 'text', class: 'form-control form-control-sm', id: 'searchText', placeholder: 'Create New Directory' });
         var newFolderInputGroupAppend = $('<div>', { class: 'input-group-append' });
         var newFolderIcon = this.svgs('plus');
-        var newFolderButton = $('<button>', { 'data-bind': 'click:createNewDirectory', class: 'btn btn-sm btn-primary', title: 'Create New Directory' });
+        var newFolderButton = $('<button>', { 'data-bind': 'click:createNewDirectory, enable:newDirectoryName', class: 'btn btn-sm btn-primary', title: 'Create New Directory' });
         newFolderInputGroup.append(newFolderInput).append(newFolderInputGroupAppend.append(newFolderButton.append(newFolderIcon)));
         newFolderColumn.append(newFolderInputGroup);
 

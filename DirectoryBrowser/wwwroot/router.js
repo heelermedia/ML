@@ -49,19 +49,6 @@
         }
         return null;
     }
-    Router.prototype.initialize = function (path, queryParams) {
-        var path;
-        if (path !== '/') {
-            path = window.location.pathname;
-        } else {
-            path = 'C:\\';
-        }
-        this.history = this.getHistoryStack(path);
-        if (queryParams) path = path + '/' + queryParams.split('=')[1];
-        this.events.publish('routeChanged', path);
-        this.events.publish('breadCrumbsChanged', this.getHistoryStack(path));
-    }
-
     Router.prototype.getHistoryStack = function (path) {
         var history = [];
         if (path) {
@@ -89,6 +76,17 @@
             }
         }
         return history;
+    }
+    Router.prototype.initialize = function (path, queryParams) {
+        if (path !== '/') {
+            path = window.location.pathname;
+        } else {
+            path = 'C:\\';
+        }
+        this.history = this.getHistoryStack(path);
+        if (queryParams) path = path + '/' + queryParams.split('=')[1];
+        this.events.publish('routeChanged', path);
+        this.events.publish('breadCrumbsChanged', this.getHistoryStack(path));
     }
     return Router;
 }());
