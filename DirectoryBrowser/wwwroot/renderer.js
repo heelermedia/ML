@@ -158,7 +158,7 @@
 
         var addFilesColumn = $('<div>', { class: 'col-lg-3' });
 
-        var fileUploadInput = $('<input>', { 'data-bind': 'value:fileInputValue, event:{ change:filesSelected }', type: 'file', class: 'fileInput' });
+        var fileUploadInput = $('<input>', { 'data-bind': 'enable: enableInputs, value:fileInputValue, event:{ change:filesSelected }', type: 'file', class: 'fileInput' });
         fileUploadInput.attr('multiple', '');
         addFilesColumn.append(fileUploadInput);
 
