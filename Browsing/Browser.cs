@@ -14,7 +14,7 @@ namespace Browsing
     /// </summary>
     public class Browser : IBrowser
     {
-        private const string _defaultDirectory = @"C:\\Projects\\EpocFrames\\EpocFrames\\EpocFrames.Server";
+        private const string _defaultDirectory = @"C:\\Users";
         private static List<string> hiddenSections = new List<string> { "bin", "app_data" };
 
         public Browser()
@@ -294,17 +294,17 @@ namespace Browsing
                     //continue if there is one
                     catch (UnauthorizedAccessException e)
                     {
-                        System.Diagnostics.Debug.WriteLine(e.Message);
+                        Debug.WriteLine(e.Message);
                         continue;
                     }
                     catch (DirectoryNotFoundException e)
                     {
-                        System.Diagnostics.Debug.WriteLine(e.Message);
+                        Debug.WriteLine(e.Message);
                         continue;
                     }
                     catch (Exception e)
                     {
-                        System.Diagnostics.Debug.WriteLine(e.Message);
+                        Debug.WriteLine(e.Message);
                         continue;
                     }
                 }
@@ -366,15 +366,15 @@ namespace Browsing
                 }
                 catch (UnauthorizedAccessException e)
                 {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
+                    Debug.WriteLine(e.Message);
                 }
                 catch (DirectoryNotFoundException e)
                 {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
+                    Debug.WriteLine(e.Message);
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
+                    Debug.WriteLine(e.Message);
                 }
             }
             return size;
