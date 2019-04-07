@@ -61,8 +61,10 @@
             return h.nodeName !== node.name;
         });
         this.events.publish('breadCrumbsChanged', this.getHistoryStack(node.parent));
-        var activePath = this.getNodePath(toReplace.path);
-        window.history.replaceState(toReplace, '', '');
+        if (toReplace) {
+            var activePath = this.getNodePath(toReplace.path);
+            window.history.replaceState(toReplace, '', '');
+        }
     }
     Router.prototype.getHistoryStack = function (path) {
         var history = [];
@@ -96,9 +98,7 @@
         this.history = [];
         if (path !== '/') {
             path = window.location.pathname;
-        } else {
-            path = 'C:\\Users';
-        }
+        } 
         this.history = this.getHistoryStack(path);
         if (queryParams) path = path + '/' + queryParams.split('=')[1];
         this.events.publish('routeChanged', path);

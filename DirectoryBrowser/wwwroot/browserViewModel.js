@@ -25,8 +25,7 @@
         this.createNodes(node.content ? [node] : node.children, this.nodes);
     }
     BrowserViewModel.prototype.initialize = function (path) {
-        var p = path ? path : "C:\\TestingFolder";
-        this.browserApi.getBrowserNodes(p, this.nodesRetrieved, this);
+        this.browserApi.getBrowserNodes(path, this.nodesRetrieved, this);
     }
     BrowserViewModel.prototype.nodeClicked = function (node) {
         this.browserApi.getBrowserNodes(node.path, this.nodesRetrieved, this);

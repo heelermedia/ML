@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using System.Diagnostics;
 
 namespace Browsing
 {
@@ -13,7 +14,8 @@ namespace Browsing
     /// </summary>
     public class Browser : IBrowser
     {
-        private const string _defaultDirectory = @"C:\\Users";
+        private const string _defaultDirectory = @"C:\\Projects\\EpocFrames\\EpocFrames\\EpocFrames.Server";
+        private static List<string> hiddenSections = new List<string> { "bin", "app_data" };
 
         public Browser()
         {
@@ -25,25 +27,17 @@ namespace Browsing
         /// <returns></returns>
         public Node GetBrowserNodes(string path, string searchPattern = null)
         {
-            try
-            {
-                if (string.IsNullOrEmpty(path)) path = _defaultDirectory;
-                DirectoryInfo directoryInfo = new DirectoryInfo(path);
-                Node rootNode = CreateRootNode(directoryInfo);
-                rootNode.Children = new List<Node>();
-                List<Node> directories = CreateDirectoryNodes(directoryInfo, searchPattern);
-                rootNode.DirectoryCount = directories.Count();
-                rootNode.Children.AddRange(directories);
-                List<Node> files = CreateFileNodes(directoryInfo, searchPattern);
-                rootNode.FileCount = files.Count();
-                rootNode.Children.AddRange(files);
-
-                return rootNode;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            if (string.IsNullOrEmpty(path) || path.Equals("/")) path = _defaultDirectory;
+            DirectoryInfo directoryInfo = new DirectoryInfo(path);
+            Node rootNode = CreateRootNode(directoryInfo);
+            rootNode.Children = new List<Node>();
+            List<Node> directories = CreateDirectoryNodes(directoryInfo, searchPattern);
+            rootNode.DirectoryCount = directories.Count();
+            rootNode.Children.AddRange(directories);
+            List<Node> files = CreateFileNodes(directoryInfo, searchPattern);
+            rootNode.FileCount = files.Count();
+            rootNode.Children.AddRange(files);
+            return rootNode;
         }
         /// <summary>
         /// Upload file(s)
@@ -235,21 +229,35 @@ namespace Browsing
                 {
                     try
                     {
-                        directoryNodes.Add(new Node
+                        if (!hiddenSections.Contains(dirInfo.Name.ToLower()))
                         {
-                            Path = dirInfo.FullName,
-                            Parent = dirInfo.Parent.FullName,
-                            Root = dirInfo.Root.FullName,
-                            Name = dirInfo.Name,
-                            IsFile = false,
-                            Size = GetBytesSize(dirInfo.FullName, false),
-                            HasChildren = dirInfo.EnumerateFileSystemInfos("*", SearchOption.TopDirectoryOnly).Any()
-                        });
+                            directoryNodes.Add(new Node
+                            {
+                                Path = dirInfo.FullName,
+                                Parent = dirInfo.Parent.FullName,
+                                Root = dirInfo.Root.FullName,
+                                Name = dirInfo.Name,
+                                IsFile = false,
+                                Size = GetBytesSize(dirInfo.FullName, false),
+                                HasChildren = dirInfo.EnumerateFileSystemInfos("*", SearchOption.TopDirectoryOnly).Any()
+                            });
+                        }
+                    }
+                    //there will be an error, likely permissions, on some directory for sure so just
+                    //continue if there is one
+                    catch (UnauthorizedAccessException e)
+                    {
+                        Debug.WriteLine(e.Message);
+                        continue;
+                    }
+                    catch (DirectoryNotFoundException e)
+                    {
+                        Debug.WriteLine(e.Message);
+                        continue;
                     }
                     catch (Exception e)
                     {
-                        //there will be an error, likely permissions, on some directory for sure so just
-                        //continue if there is one
+                        Debug.WriteLine(e.Message);
                         continue;
                     }
                 }
@@ -282,10 +290,21 @@ namespace Browsing
                             IsFile = true
                         });
                     }
+                    //there will be an error, likely permissions, on some directory for sure so just
+                    //continue if there is one
+                    catch (UnauthorizedAccessException e)
+                    {
+                        System.Diagnostics.Debug.WriteLine(e.Message);
+                        continue;
+                    }
+                    catch (DirectoryNotFoundException e)
+                    {
+                        System.Diagnostics.Debug.WriteLine(e.Message);
+                        continue;
+                    }
                     catch (Exception e)
                     {
-                        //there will be an error, likely permissions, on some directory for sure so just
-                        //continue if there is one
+                        System.Diagnostics.Debug.WriteLine(e.Message);
                         continue;
                     }
                 }
@@ -336,18 +355,26 @@ namespace Browsing
             }
             else
             {
-                IEnumerable<string> files = Directory.EnumerateFiles(path, "*.*", SearchOption.TopDirectoryOnly);
-                foreach (string name in files)
+                DirectoryInfo directoryInfo = new DirectoryInfo(path);
+                try
                 {
-                    try
+                    IEnumerable<FileInfo> filesInfos = directoryInfo.EnumerateFiles("*", SearchOption.TopDirectoryOnly);
+                    foreach (FileInfo fileInfo in filesInfos)
                     {
-                        FileInfo info = new FileInfo(name);
-                        size += info.Length;
+                        size += fileInfo.Length;
                     }
-                    catch(Exception e)
-                    {
-                        continue;
-                    }
+                }
+                catch (UnauthorizedAccessException e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
+                catch (DirectoryNotFoundException e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
             }
             return size;

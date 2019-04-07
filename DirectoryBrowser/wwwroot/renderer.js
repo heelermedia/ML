@@ -110,19 +110,19 @@
         var column = $('<div>', { class: 'col-lg-12' });
         var innerRow = $('<div>', { class: 'row' });
 
-        var innerColumnA = $('<div>', { class: 'col-lg-6 text-right' });
+        var innerColumnA = $('<div>', { class: 'col-lg-6 text-right pl-0 pr-0' });
         var pA = $('<p>', { class: 'pb-0 mb-0' });
         pA.append('Active Directory:');
         var spanA = $('<span>', { 'data-bind': 'text: rootDirectory', class: 'font-weight-bold text-primary ml-2' });
         innerColumnA.append(pA.append(spanA));
 
-        var innerColumnB = $('<div>', { class: 'col-lg-3 text-right' });
+        var innerColumnB = $('<div>', { class: 'col-lg-3 text-right pl-0 pr-0' });
         var pB = $('<p>', { class: 'pb-0 mb-0' });
         pB.append('Directories:');
         var spanB = $('<span>', { 'data-bind': 'text: directoryCount', class: 'font-weight-bold text-primary ml-2' });
         innerColumnB.append(pB.append(spanB));
 
-        var innerColumnC = $('<div>', { class: 'col-lg-3 text-right' });
+        var innerColumnC = $('<div>', { class: 'col-lg-3 text-right pl-0' });
         var pC = $('<p>', { class: 'pb-0 mb-0' });
         pC.append('Files:');
         var spanC = $('<span>', { 'data-bind': 'text: fileCount', class: 'font-weight-bold text-primary ml-2' });
