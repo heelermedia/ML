@@ -10,7 +10,7 @@
         var view = this.getView(viewDefinition.type, viewDefinition);
         $(target || 'body').append(view);
         this.applyDataContexts(viewDefinition.viewDefinitions);
-
+        $(target || 'body').hide().fadeIn('slow');
     };
     Renderer.prototype.tearOutBrowser = function () {
         this.tearDown(this.activeViewModels);
