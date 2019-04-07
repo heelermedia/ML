@@ -25,13 +25,15 @@
         this.newDirectoryName(null);
     }
     SearchViewModel.prototype.filesSelected = function (vm, e) {
-        var files = e.target.files;
-        var formData = new FormData();
-        for (var i = 0; i < files.length; i++) {
-            formData.append("files", files[i]);
+        if (this.fileInputValue()) {
+            var files = e.target.files;
+            var formData = new FormData();
+            for (var i = 0; i < files.length; i++) {
+                formData.append("files", files[i]);
+            }
+            this.events.publish('fileUpload', { path: this.selectedRootNode().path, files: formData, isFileUpload: true });
+            this.fileInputValue(null);
         }
-        this.events.publish('fileUpload', { path: this.selectedRootNode().path, files: formData, isFileUpload: true });
-        this.fileInputValue(null);
     }
     SearchViewModel.prototype.dispose = function () {
         this.events.unsubscribe('rootNodeChanged', this.nodeInfoChanged);

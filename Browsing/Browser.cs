@@ -57,9 +57,9 @@ namespace Browsing
 
             foreach (IFormFile formFile in fileUpload.Files)
             {
-                if (formFile.Length > 0 && File.Exists(path) == false)
+                if (formFile.Length > 0)
                 {
-                    using (var stream = new FileStream(Path.Combine(path, formFile.FileName), FileMode.Create))
+                    using (var stream = new FileStream(Path.Combine(path, Path.GetFileName(formFile.FileName)), FileMode.Create))
                     {
                         await formFile.CopyToAsync(stream);
                     }
@@ -339,8 +339,15 @@ namespace Browsing
                 IEnumerable<string> files = Directory.EnumerateFiles(path, "*.*", SearchOption.TopDirectoryOnly);
                 foreach (string name in files)
                 {
-                    FileInfo info = new FileInfo(name);
-                    size += info.Length;
+                    try
+                    {
+                        FileInfo info = new FileInfo(name);
+                        size += info.Length;
+                    }
+                    catch(Exception e)
+                    {
+                        continue;
+                    }
                 }
             }
             return size;

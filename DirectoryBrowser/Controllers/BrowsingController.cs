@@ -22,6 +22,7 @@ namespace DirectoryBrowser.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public ActionResult<Node> Get(string path)
         {
             Node toReturn = _browser.GetBrowserNodes(path);
