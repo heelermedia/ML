@@ -15,7 +15,8 @@ namespace Browsing
     public class Browser : IBrowser
     {
         private const string _defaultDirectory = @"C:\\Users";
-        private static List<string> hiddenSections = new List<string> { "bin", "app_data" };
+        private static List<string> _hiddenSections = new List<string> { "bin", "app_data" };
+        private static Random _random = new Random();
 
         public Browser()
         {
@@ -139,7 +140,7 @@ namespace Browsing
                 if (node.IsFile)
                 {
                     string extension = Path.GetExtension(node.Name);
-                    target = $"{path}/{Path.GetFileNameWithoutExtension(node.Path)}_copy{extension}";
+                    target = $"{path}/{Path.GetFileNameWithoutExtension(node.Path)}_copy{_random.Next()}{extension}";
                     if (File.Exists(target) == false)
                     {
                         using (FileStream source = File.Open(node.Path, FileMode.Open))
@@ -153,7 +154,7 @@ namespace Browsing
                 }
                 else
                 {
-                    CopyDirectory(path, $"{path}_copy", true);
+                    CopyDirectory(path, $"{path}_copy{_random.Next()}", true);
                 }
             }
             return copyNodes.ToNode.IsFile ? GetBrowserNodes(path) : GetBrowserNodes(copyNodes.ToNode.Parent);
@@ -246,7 +247,7 @@ namespace Browsing
                 {
                     try
                     {
-                        if (!hiddenSections.Contains(dirInfo.Name.ToLower()))
+                        if (!_hiddenSections.Contains(dirInfo.Name.ToLower()))
                         {
                             directoryNodes.Add(new Node
                             {
