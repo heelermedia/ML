@@ -30,6 +30,7 @@ namespace Browsing
             if (string.IsNullOrEmpty(path) || path.Equals("/")) path = _defaultDirectory;
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
             Node rootNode = CreateRootNode(directoryInfo);
+            directoryInfo = new DirectoryInfo(rootNode.Path);
             rootNode.Children = new List<Node>();
             List<Node> directories = CreateDirectoryNodes(directoryInfo, searchPattern);
             rootNode.DirectoryCount = directories.Count();
@@ -194,24 +195,40 @@ namespace Browsing
             else
             {
                 string path = directoryInfo.FullName;
-                MemoryStream ms = new MemoryStream();
-                using (StreamReader reader = new StreamReader(path))
+                if (File.Exists(path))
                 {
-                    reader.BaseStream.CopyTo(ms);
+                    MemoryStream ms = new MemoryStream();
+                    using (StreamReader reader = new StreamReader(path))
+                    {
+                        reader.BaseStream.CopyTo(ms);
+                    }
+                    return new Node
+                    {
+                        Path = directoryInfo.FullName,
+                        Parent = directoryInfo.Parent?.FullName,
+                        Root = directoryInfo.Root.FullName,
+                        Name = directoryInfo.Name,
+                        IsFile = true,
+                        Size = GetBytesSize(directoryInfo.FullName, true),
+                        HasChildren = false,
+                        Content = Encoding.UTF8.GetString(ms.GetBuffer())
+                    };
                 }
-                return new Node
+                else
                 {
-                    Path = directoryInfo.FullName,
-                    Parent = directoryInfo.Parent?.FullName,
-                    Root = directoryInfo.Root.FullName,
-                    Name = directoryInfo.Name,
-                    IsFile = true,
-                    Size = GetBytesSize(directoryInfo.FullName, true),
-                    HasChildren = false,
-                    Content = Encoding.UTF8.GetString(ms.GetBuffer())
-                };
+                    DirectoryInfo di = new DirectoryInfo(directoryInfo.Parent.FullName);
+                    return new Node
+                    {
+                        Path = di.FullName,
+                        Parent = di.Parent?.FullName,
+                        Root = di.Root.FullName,
+                        Name = di.Name,
+                        IsFile = false,
+                        Size = GetBytesSize(di.FullName, false),
+                        HasChildren = di.EnumerateFileSystemInfos("*", SearchOption.TopDirectoryOnly).Any()
+                    };
+                }
             }
-
         }
         /// <summary>
         /// Create directory nodes

@@ -140,7 +140,7 @@
 
         var searchColumn = $('<div>', { class: 'col-lg-3 pl-0' });
         var searchInputGroup = $('<div>', { class: 'input-group mb-3' });
-        var searchInput = $('<input>', { 'data-bind': 'textInput:searchText', type: 'text', class: 'form-control form-control-sm', id: 'searchText', placeholder: 'Search' });
+        var searchInput = $('<input>', { 'data-bind': 'textInput:searchText, enable: enableInputs', type: 'text', class: 'form-control form-control-sm', id: 'searchText', placeholder: 'Search' });
         var searchInputGroupAppend = $('<div>', { class: 'input-group-append' });
         var searchIcon = this.svgs('search');
         var searchButton = $('<button>', { 'data-bind': 'click:search, enable:searchText', class: 'btn btn-sm btn-primary', title: 'Search' });
@@ -149,7 +149,7 @@
 
         var newFolderColumn = $('<div>', { class: 'col-lg-3' });
         var newFolderInputGroup = $('<div>', { class: 'input-group mb-3' });
-        var newFolderInput = $('<input>', { 'data-bind': 'textInput:newDirectoryName', type: 'text', class: 'form-control form-control-sm', id: 'searchText', placeholder: 'Create New Directory' });
+        var newFolderInput = $('<input>', { 'data-bind': 'textInput:newDirectoryName, enable: enableInputs', type: 'text', class: 'form-control form-control-sm', id: 'searchText', placeholder: 'Create New Directory' });
         var newFolderInputGroupAppend = $('<div>', { class: 'input-group-append' });
         var newFolderIcon = this.svgs('plus');
         var newFolderButton = $('<button>', { 'data-bind': 'click:createNewDirectory, enable:newDirectoryName', class: 'btn btn-sm btn-primary', title: 'Create New Directory' });

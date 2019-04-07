@@ -8,9 +8,15 @@
         this.newDirectoryName = ko.observable();
         this.selectedRootNode = ko.observable();
         this.fileInputValue = ko.observable();
+        this.enableInputs = ko.observable(true);
         this.events.subscribe('rootNodeChanged', this.nodeInfoChanged, this);
     }
     SearchViewModel.prototype.nodeInfoChanged = function (node) {
+        if (node.isFile && node.content) {
+            this.enableInputs(false);
+        } else {
+            this.enableInputs(true);
+        }
         this.selectedRootNode(node);
     }
     SearchViewModel.prototype.search = function () {

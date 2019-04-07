@@ -17,9 +17,6 @@
     }
     BrowserViewModel.prototype.nodesRetrieved = function (node) {
         var existingNode = this.nodes();
-        if (existingNode && existingNode.dispose) {
-            existingNode.dispose();
-        }
         this.events.publish('rootNodeChanged', node);
         this.nodes([]);
         this.createNodes(node.content ? [node] : node.children, this.nodes);

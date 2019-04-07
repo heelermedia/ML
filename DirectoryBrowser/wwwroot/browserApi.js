@@ -12,7 +12,7 @@
             if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
                 if (config.callback) {
                     var response = this.response;
-                    if (typeof (response) === 'string') response = JSON.parse(response); 
+                    if (response && typeof (response) === 'string') response = JSON.parse(response); 
                     config.callback.call(context, response);
                 }
             }
