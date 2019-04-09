@@ -48,9 +48,7 @@ namespace Browsing
         /// <returns></returns>
         public async Task<Node> UploadFilesAsync(FileUpload fileUpload)
         {
-            long size = fileUpload.Files.Sum(f => f.Length);
             string path = fileUpload.Path;
-
             foreach (IFormFile formFile in fileUpload.Files)
             {
                 if (formFile.Length > 0)
@@ -61,7 +59,6 @@ namespace Browsing
                     }
                 }
             }
-
             return GetBrowserNodes(path);
         }
         /// <summary>
