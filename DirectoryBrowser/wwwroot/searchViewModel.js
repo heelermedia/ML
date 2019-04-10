@@ -2,8 +2,6 @@
     function SearchViewModel(events, browserApi) {
         this.events = events;
         this.browserApi = browserApi;
-        this.searchOptions = ko.observableArray(['Search Files', 'Search Directories']);
-        this.selectedSearchOption = ko.observable(this.searchOptions()[0]);
         this.searchText = ko.observable();
         this.newDirectoryName = ko.observable();
         this.selectedRootNode = ko.observable();
